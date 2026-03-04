@@ -1,0 +1,164 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String    @id @default(uuid())
+  email        String    @unique
+  passwordHash String
+  name         String
+  locale       String    @default("en")
+  tier         String    @default("FREE")
+  locationLat  Float?
+  locationLng  Float?
+  createdAt    DateTime  @default(now())
+  lastActiveAt DateTime  @default(now())
+
+  styleProfile  StyleProfile?
+  sessions      CameraSession[]
+  behaviors     BehaviorEvent[]
+  notifications Notification[]
+  spotViews     UserSpotView[]
+  telemetry     TelemetryEvent[]
+}
+
+model StyleProfile {
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id])
+  genres      String   // JSON array
+  moods       String   // JSON array
+  styleVector String   // JSON object: tag -> weight
+  styleSummary String  @default("")
+  confidence  Float    @default(0.0)
+  version     Int      @default(1)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  preferences PhotoPreference[]
+}
+
+model PhotoPreference {
+  id             String   @id @default(uuid())
+  userId         String
+  styleProfileId String
+  profile        StyleProfile @relation(fields: [styleProfileId], references: [id])
+  photoId        String
+  photoUrl       String
+  photoTags      String   // JSON array
+  selected       Boolean
+  quizRound      Int
+  createdAt      DateTime @default(now())
+}
+
+model CameraSession {
+  id            String    @id @default(uuid())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id])
+  startedAt     DateTime  @default(now())
+  endedAt       DateTime?
+  locationLat   Float?
+  locationLng   Float?
+  sceneContext  String?   // JSON
+  overlaysShown Int       @default(0)
+  overlaysUsed  Int       @default(0)
+}
+
+model BehaviorEvent {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  eventType String
+  metadata  String   // JSON
+  createdAt DateTime @default(now())
+}
+
+model Spot {
+  id          String   @id @default(uuid())
+  externalId  String   @unique
+  source      String   // GOOGLE_PLACES | COMMUNITY
+  name        String
+  description String?
+  latitude    Float
+  longitude   Float
+  styleTags   String   // JSON array
+  bestTimes   String   // JSON array
+  photoUrl    String?
+  rating      Float    @default(0.0)
+  ratingCount Int      @default(0)
+  createdAt   DateTime @default(now())
+  expiresAt   DateTime
+
+  viewers UserSpotView[]
+}
+
+model UserSpotView {
+  id       String   @id @default(uuid())
+  userId   String
+  spotId   String
+  user     User     @relation(fields: [userId], references: [id])
+  spot     Spot     @relation(fields: [spotId], references: [id])
+  saved    Boolean  @default(false)
+  viewedAt DateTime @default(now())
+
+  @@unique([userId, spotId])
+}
+
+model Notification {
+  id           String    @id @default(uuid())
+  userId       String
+  user         User      @relation(fields: [userId], references: [id])
+  type         String
+  title        String
+  body         String
+  metadata     String    // JSON
+  scheduledFor DateTime
+  sentAt       DateTime?
+  openedAt     DateTime?
+  createdAt    DateTime  @default(now())
+}
+
+model WeatherCache {
+  id          String   @id @default(uuid())
+  locationKey String   @unique
+  data        String   // JSON
+  fetchedAt   DateTime @default(now())
+  expiresAt   DateTime
+}
+
+model APICallLog {
+  id           String   @id @default(uuid())
+  service      String
+  endpoint     String
+  latencyMs    Int
+  statusCode   Int
+  tokensUsed   Int?
+  costEstimate Float?
+  createdAt    DateTime @default(now())
+}
+
+model TelemetryEvent {
+  id         String   @id @default(uuid())
+  eventType  String
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id])
+  properties String   // JSON
+  latencyMs  Int?
+  createdAt  DateTime @default(now())
+}
+
+model DailyMetricRollup {
+  id        String   @id @default(uuid())
+  date      String
+  metric    String
+  value     Float
+  breakdown String?
+  createdAt DateTime @default(now())
+
+  @@unique([date, metric])
+}

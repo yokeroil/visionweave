@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VisionWeave — Style 03: Golden Drift</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Figtree:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --ink:#1A1220;
+  --panel:#221830;
+  --card:#271D35;
+  --border:rgba(255,255,255,0.07);
+  --gold:#F0A832;
+  --gold-light:#F8C96A;
+  --gold-dim:rgba(240,168,50,0.45);
+  --rust:#C4571A;
+  --cream:#F7EED8;
+  --cream-dim:rgba(247,238,216,0.5);
+  --purple:#6B4FA0;
+}
+
+body{
+  background:#100C1A;
+  display:flex;flex-direction:column;align-items:center;
+  min-height:100vh;padding:40px 20px 60px;
+  font-family:'Figtree',sans-serif;
+}
+
+.label{
+  font-family:'Cormorant Garamond',serif;font-size:15px;font-style:italic;
+  letter-spacing:0.08em;color:rgba(240,168,50,0.6);
+  margin-bottom:28px;text-align:center;
+}
+.label span{color:rgba(255,255,255,0.2);margin:0 8px;}
+
+/* PHONE */
+.phone{
+  width:390px;height:844px;
+  background:var(--ink);
+  border-radius:48px;
+  box-shadow:
+    0 0 0 10px rgba(255,255,255,0.04),
+    0 0 0 11px rgba(240,168,50,0.06),
+    0 70px 140px rgba(0,0,0,0.85),
+    inset 0 1px 0 rgba(255,255,255,0.06);
+  overflow:hidden;position:relative;display:flex;flex-direction:column;
+}
+
+/* Dynamic island */
+.island{
+  position:absolute;top:10px;left:50%;transform:translateX(-50%);
+  width:126px;height:34px;background:#0A0810;border-radius:20px;
+  z-index:10;display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.island-cam{width:10px;height:10px;border-radius:50%;background:#1A1428;border:1px solid rgba(255,255,255,0.1);}
+.island-mic{width:6px;height:6px;border-radius:50%;background:#1A1428;}
+
+.statusbar{
+  height:52px;display:flex;align-items:flex-end;justify-content:space-between;
+  padding:0 28px 10px;flex-shrink:0;
+}
+.sb-time{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:500;color:var(--cream);}
+.sb-icons{display:flex;gap:6px;align-items:center;font-size:12px;color:rgba(247,238,216,0.6);}
+
+.screens{flex:1;overflow:hidden;position:relative;}
+.screen{position:absolute;inset:0;overflow-y:auto;opacity:0;pointer-events:none;transition:opacity 0.4s ease;scrollbar-width:none;}
+.screen::-webkit-scrollbar{display:none;}
+.screen.active{opacity:1;pointer-events:all;}
+
+/* ── HOME ── */
+.home{background:var(--ink);padding:0 0 90px;}
+
+.home-hero{
+  height:260px;position:relative;overflow:hidden;
+  background:linear-gradient(160deg,#1A1228 0%,#2A1A18 40%,#3A2010 70%,#5A3210 100%);
+}
+.hero-blob{
+  position:absolute;
+  border-radius:50%;filter:blur(60px);
+}
+.hero-blob-1{width:250px;height:250px;background:rgba(240,168,50,0.25);top:-60px;right:-60px;}
+.hero-blob-2{width:180px;height:180px;background:rgba(196,87,26,0.2);bottom:-40px;left:-20px;}
+.hero-blob-3{width:120px;height:120px;background:rgba(107,79,160,0.2);top:40px;left:40%;}
+
+.hero-content{position:absolute;inset:0;padding:24px 24px 28px;display:flex;flex-direction:column;justify-content:flex-end;}
+.hero-greeting{font-family:'Figtree',sans-serif;font-size:13px;font-weight:300;color:rgba(247,238,216,0.55);letter-spacing:0.05em;margin-bottom:6px;}
+.hero-title{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:400;color:var(--cream);line-height:1.15;margin-bottom:14px;}
+.hero-title em{color:var(--gold);font-style:italic;}
+.hero-pill{
+  display:inline-flex;align-items:center;gap:10px;
+  background:rgba(0,0,0,0.35);backdrop-filter:blur(16px);
+  border:1px solid rgba(240,168,50,0.3);border-radius:100px;
+  padding:10px 18px;width:fit-content;cursor:pointer;
+  transition:background 0.2s;
+}
+.hero-pill:hover{background:rgba(240,168,50,0.15);}
+.hp-dot{width:8px;height:8px;border-radius:50%;background:var(--gold);animation:glow 2s ease-in-out infinite;}
+@keyframes glow{0%,100%{box-shadow:0 0 0 0 rgba(240,168,50,0.5);}50%{box-shadow:0 0 0 5px rgba(240,168,50,0);}}
+.hp-text{font-family:'Figtree',sans-serif;font-size:13px;font-weight:400;color:var(--gold);letter-spacing:0.02em;}
+.hp-arrow{color:var(--gold-dim);font-size:14px;}
+
+/* Card counter overlay */
+.hero-counter{
+  position:absolute;top:20px;right:20px;
+  background:rgba(0,0,0,0.4);backdrop-filter:blur(12px);
+  border:1px solid rgba(255,255,255,0.1);border-radius:12px;
+  padding:8px 14px;text-align:center;
+}
+.hc-num{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--gold);line-height:1;}
+.hc-label{font-size:10px;color:var(--cream-dim);letter-spacing:0.08em;margin-top:2px;}
+
+.home-body{padding:20px 22px;}
+.sec-hd{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px;}
+.sec-hd-title{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:400;color:var(--cream);}
+.sec-hd-link{font-size:12px;font-weight:300;color:var(--gold);letter-spacing:0.06em;cursor:pointer;}
+
+/* Spot cards horizontal */
+.row{display:flex;gap:12px;overflow-x:auto;margin:0 -22px;padding:0 22px 14px;scrollbar-width:none;}
+.row::-webkit-scrollbar{display:none;}
+
+.spc{min-width:160px;height:210px;border-radius:20px;overflow:hidden;position:relative;cursor:pointer;flex-shrink:0;}
+.spc-bg{position:absolute;inset:0;transition:transform 0.4s ease;}
+.spc:hover .spc-bg{transform:scale(1.04);}
+.spc-bg-1{background:linear-gradient(165deg,#3A2010,#7A4A18,#C07020,#E8A030);}
+.spc-bg-2{background:linear-gradient(165deg,#0C1830,#142840,#1E3C60,#2A5888);}
+.spc-bg-3{background:linear-gradient(165deg,#180C18,#301628,#522040,#743060);}
+.spc-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,6,16,0.88) 0%,rgba(10,6,16,0.1) 55%);}
+.spc-body{position:absolute;bottom:0;left:0;right:0;padding:16px 14px;}
+.spc-tag{font-size:10px;font-weight:400;letter-spacing:0.16em;color:var(--gold);text-transform:uppercase;margin-bottom:5px;}
+.spc-name{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:400;color:var(--cream);line-height:1.2;}
+.spc-dist{font-size:11px;font-weight:300;color:var(--cream-dim);margin-top:4px;}
+
+/* Events */
+.ev-cards{display:flex;flex-direction:column;gap:10px;margin-top:6px;}
+.evc{
+  display:flex;align-items:center;gap:0;
+  background:var(--card);border-radius:16px;overflow:hidden;
+  border:1px solid var(--border);cursor:pointer;
+  transition:border-color 0.2s;
+}
+.evc:hover{border-color:rgba(240,168,50,0.25);}
+.evc.locked{opacity:0.5;}
+.evc-bar{width:4px;background:linear-gradient(to bottom,var(--gold),var(--rust));align-self:stretch;flex-shrink:0;}
+.evc-bar.dim{background:linear-gradient(to bottom,rgba(255,255,255,0.1),rgba(255,255,255,0.05));}
+.evc-time{min-width:58px;padding:16px 10px;border-right:1px solid var(--border);text-align:center;}
+.evc-t{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:500;color:var(--gold);}
+.evc-t.dim{color:rgba(247,238,216,0.35);}
+.evc-ap{font-size:10px;font-weight:300;color:var(--cream-dim);letter-spacing:0.06em;}
+.evc-body{flex:1;padding:14px 14px;}
+.evc-name{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:400;color:var(--cream);margin-bottom:3px;}
+.evc-desc{font-size:12px;font-weight:300;color:var(--cream-dim);}
+.evc-badge{margin:12px 14px 12px 0;padding:5px 10px;border-radius:8px;font-size:10px;font-weight:500;letter-spacing:0.06em;white-space:nowrap;}
+.evc-badge.now{color:var(--gold);background:rgba(240,168,50,0.12);border:1px solid rgba(240,168,50,0.25);}
+.evc-badge.pro{color:rgba(255,255,255,0.25);background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);}
+
+/* ── CAMERA ── */
+.cam{background:#000;position:relative;height:100%;}
+.vf{
+  position:absolute;inset:0;
+  background:linear-gradient(175deg,#0C1820 0%,#162230 45%,#1C2815 100%);
+}
+
+/* Atmospheric glow */
+.atm-glow{
+  position:absolute;
+  border-radius:50%;filter:blur(50px);pointer-events:none;
+}
+.atm-1{width:260px;height:260px;background:rgba(240,168,50,0.2);bottom:28%;left:-10%;}
+.atm-2{width:180px;height:180px;background:rgba(196,87,26,0.12);bottom:32%;right:0%;}
+
+/* Soft composition guides */
+.guide-h,.guide-v{position:absolute;background:rgba(240,168,50,0.15);}
+.guide-h{left:0;right:0;height:1px;}
+.guide-v{top:0;bottom:0;width:1px;}
+
+/* Subject indicator – organic ellipse */
+.subject-oval{
+  position:absolute;
+  width:80px;height:120px;
+  border:1.5px solid rgba(240,168,50,0.5);
+  border-radius:50%;
+  top:33%;left:calc(33% - 40px);
+  box-shadow:0 0 20px rgba(240,168,50,0.1);
+  animation:breathe 3s ease-in-out infinite;
+}
+@keyframes breathe{0%,100%{transform:scale(1);}50%{transform:scale(1.03);}}
+
+/* Corner ornaments – rounded */
+.cam-corner{position:absolute;width:20px;height:20px;}
+.cam-corner::before,.cam-corner::after{content:'';position:absolute;background:var(--gold);opacity:0.65;}
+.cam-corner.tl{top:16px;left:16px;}
+.cam-corner.tl::before{top:0;left:0;right:0;height:1.5px;}
+.cam-corner.tl::after{top:0;left:0;bottom:0;width:1.5px;}
+.cam-corner.tr{top:16px;right:16px;}
+.cam-corner.tr::before{top:0;left:0;right:0;height:1.5px;}
+.cam-corner.tr::after{top:0;right:0;bottom:0;width:1.5px;}
+.cam-corner.bl{bottom:110px;left:16px;}
+.cam-corner.bl::before{bottom:0;left:0;right:0;height:1.5px;}
+.cam-corner.bl::after{top:0;left:0;bottom:0;width:1.5px;}
+.cam-corner.br{bottom:110px;right:16px;}
+.cam-corner.br::before{bottom:0;left:0;right:0;height:1.5px;}
+.cam-corner.br::after{top:0;right:0;bottom:0;width:1.5px;}
+
+/* Top pill */
+.cam-pill{
+  position:absolute;top:60px;left:50%;transform:translateX(-50%);
+  background:rgba(0,0,0,0.5);backdrop-filter:blur(18px);
+  border:1px solid rgba(240,168,50,0.2);border-radius:100px;
+  padding:8px 18px;display:flex;align-items:center;gap:10px;white-space:nowrap;
+}
+.cp-dot{width:7px;height:7px;border-radius:50%;background:var(--gold);flex-shrink:0;}
+.cp-text{font-size:13px;font-weight:300;color:var(--cream);letter-spacing:0.02em;}
+
+/* Guidance card */
+.guide-card{
+  position:absolute;top:110px;left:16px;right:70px;
+  background:rgba(0,0,0,0.55);backdrop-filter:blur(18px);
+  border:1px solid rgba(240,168,50,0.18);border-radius:16px;
+  padding:12px 16px;
+}
+.gc-tag{font-size:10px;font-weight:400;letter-spacing:0.16em;color:var(--gold);text-transform:uppercase;margin-bottom:4px;}
+.gc-text{font-size:13px;font-weight:300;color:var(--cream);line-height:1.45;}
+
+/* Sun compass */
+.sun-compass{
+  position:absolute;top:110px;right:16px;
+  width:48px;height:48px;
+  border:1px solid rgba(240,168,50,0.3);border-radius:50%;
+  background:rgba(0,0,0,0.5);backdrop-filter:blur(12px);
+  display:flex;align-items:center;justify-content:center;overflow:hidden;
+}
+.sun-ray{
+  position:absolute;width:2px;height:22px;
+  background:linear-gradient(to bottom,var(--gold),transparent);
+  transform-origin:center bottom;
+  bottom:50%;left:calc(50% - 1px);
+  transform:rotate(-42deg);
+}
+.sun-core{
+  position:absolute;width:8px;height:8px;border-radius:50%;
+  background:var(--gold);box-shadow:0 0 8px var(--gold-light);
+  top:8px;left:50%;transform:translateX(-50%);
+}
+
+/* Bottom controls */
+.cam-bottom{
+  position:absolute;bottom:0;left:0;right:0;height:130px;
+  background:linear-gradient(to top,rgba(10,6,16,0.92),transparent);
+  display:flex;align-items:center;justify-content:center;gap:34px;padding-bottom:14px;
+}
+.cb-sec{
+  width:46px;height:46px;border-radius:50%;
+  background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--cream-dim);font-size:17px;cursor:pointer;
+}
+.cb-main{
+  width:72px;height:72px;border-radius:50%;
+  border:2px solid rgba(247,238,216,0.7);
+  background:transparent;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:border-color 0.2s;
+}
+.cb-main:hover{border-color:var(--cream);}
+.cb-inner{
+  width:58px;height:58px;border-radius:50%;
+  background:rgba(247,238,216,0.88);
+  transition:transform 0.15s ease;
+}
+.cb-main:hover .cb-inner{transform:scale(0.92);}
+
+/* ── QUIZ ── */
+.quiz{background:var(--ink);padding:0 0 90px;min-height:100%;}
+
+.q-header{
+  padding:24px 22px 20px;
+  background:linear-gradient(180deg,var(--panel) 0%,var(--ink) 100%);
+}
+.q-back{font-size:12px;font-weight:300;color:var(--gold);letter-spacing:0.06em;margin-bottom:18px;cursor:pointer;display:flex;align-items:center;gap:5px;}
+.q-step-label{font-size:11px;font-weight:300;color:var(--cream-dim);letter-spacing:0.1em;margin-bottom:8px;}
+.q-title{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:400;color:var(--cream);line-height:1.25;}
+.q-title em{color:var(--gold);font-style:italic;}
+.q-progress{display:flex;gap:4px;margin-top:14px;}
+.qpd{height:2px;flex:1;border-radius:2px;background:rgba(240,168,50,0.12);}
+.qpd.on{background:var(--gold);}
+
+.q-body{padding:18px 22px;}
+.q-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px;}
+.qc{
+  border-radius:20px;overflow:hidden;aspect-ratio:3/4;
+  position:relative;cursor:pointer;
+  border:2px solid transparent;
+  transition:all 0.25s ease;
+}
+.qc:hover{transform:translateY(-2px);}
+.qc.sel{border-color:var(--gold);box-shadow:0 8px 28px rgba(240,168,50,0.25);}
+.qc-bg{position:absolute;inset:0;}
+.qc-1{background:linear-gradient(155deg,#3A1E08,#7A4010,#C07020,#E8A030);}
+.qc-2{background:linear-gradient(155deg,#0C1830,#142840,#1E3C60,#2A5888);}
+.qc-3{background:linear-gradient(155deg,#0C180C,#183018,#244824,#306030);}
+.qc-4{background:linear-gradient(155deg,#180C20,#2A1438,#422060,#603088);}
+.qc-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,6,16,0.88) 0%,transparent 55%);}
+.qc-label{
+  position:absolute;bottom:0;left:0;right:0;padding:14px 14px 16px;
+  font-family:'Cormorant Garamond',serif;font-size:13px;font-style:italic;
+  color:var(--cream);
+}
+.qc-check{
+  position:absolute;top:10px;right:10px;
+  width:26px;height:26px;border-radius:50%;
+  background:var(--gold);
+  display:none;align-items:center;justify-content:center;
+  font-size:13px;color:var(--ink);font-weight:600;
+}
+.qc.sel .qc-check{display:flex;}
+
+.q-cta{
+  width:100%;padding:18px;border:none;border-radius:16px;
+  background:linear-gradient(135deg,var(--gold) 0%,var(--rust) 100%);
+  font-family:'Figtree',sans-serif;font-size:15px;font-weight:600;
+  color:var(--ink);cursor:pointer;letter-spacing:0.03em;
+  box-shadow:0 8px 24px rgba(240,168,50,0.3);
+  transition:opacity 0.2s,transform 0.15s;
+}
+.q-cta:hover{opacity:0.92;transform:translateY(-1px);}
+
+/* ── SPOTS ── */
+.spots{background:var(--ink);display:flex;flex-direction:column;height:100%;}
+
+.map-hero{
+  height:280px;flex-shrink:0;position:relative;overflow:hidden;
+  background:linear-gradient(170deg,#0E0C18,#141020,#18120C);
+}
+.map-blob{position:absolute;border-radius:50%;filter:blur(50px);}
+.map-blob-1{width:200px;height:200px;background:rgba(240,168,50,0.1);top:-50px;right:20px;}
+.map-blob-2{width:150px;height:150px;background:rgba(107,79,160,0.1);bottom:-30px;left:30px;}
+.map-grid-h{position:absolute;left:0;right:0;height:1px;background:rgba(255,255,255,0.04);}
+.map-grid-v{position:absolute;top:0;bottom:0;width:1px;background:rgba(255,255,255,0.04);}
+
+.map-pin{position:absolute;display:flex;flex-direction:column;align-items:center;cursor:pointer;}
+.pin-outer{
+  width:18px;height:18px;border-radius:50%;border:1.5px solid var(--gold);
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(240,168,50,0.15);
+}
+.pin-inner{width:7px;height:7px;border-radius:50%;background:var(--gold);box-shadow:0 0 8px var(--gold);}
+.pin-outer.lg{width:24px;height:24px;}
+.pin-lbl{
+  font-size:10px;font-weight:400;color:var(--gold);
+  background:rgba(10,6,16,0.85);
+  border:1px solid rgba(240,168,50,0.2);
+  border-radius:8px;padding:3px 8px;margin-top:4px;white-space:nowrap;
+}
+
+.map-header{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:20px 20px 16px;
+  background:linear-gradient(to top,rgba(10,6,16,0.9) 0%,transparent 100%);
+  display:flex;justify-content:space-between;align-items:flex-end;
+}
+.mh-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:400;color:var(--cream);}
+.mh-count{font-size:12px;font-weight:300;color:var(--gold-dim);letter-spacing:0.06em;}
+
+.spots-list{flex:1;overflow-y:auto;padding:16px 22px;scrollbar-width:none;display:flex;flex-direction:column;gap:14px;}
+.spots-list::-webkit-scrollbar{display:none;}
+.sli{
+  display:flex;gap:14px;align-items:center;
+  background:var(--card);border-radius:18px;padding:14px;
+  border:1px solid var(--border);cursor:pointer;
+  transition:border-color 0.2s,transform 0.15s;
+}
+.sli:hover{border-color:rgba(240,168,50,0.2);transform:translateX(2px);}
+.sli-thumb{width:66px;height:66px;border-radius:14px;flex-shrink:0;}
+.st-1{background:linear-gradient(135deg,#3A1E08,#C07020);}
+.st-2{background:linear-gradient(135deg,#0C1830,#2A5888);}
+.st-3{background:linear-gradient(135deg,#180C20,#603088);}
+.st-4{background:linear-gradient(135deg,#0C180C,#306030);}
+.sli-info{flex:1;}
+.sli-tag{font-size:10px;font-weight:400;letter-spacing:0.14em;color:var(--gold);text-transform:uppercase;margin-bottom:5px;}
+.sli-name{font-family:'Cormorant Garamond',serif;font-size:17px;font-weight:400;color:var(--cream);margin-bottom:4px;}
+.sli-meta{font-size:11px;font-weight:300;color:var(--cream-dim);}
+.sli-arrow{color:rgba(255,255,255,0.2);font-size:18px;padding-left:4px;}
+
+/* ── BOTTOM NAV ── */
+.bnav{
+  height:82px;
+  background:linear-gradient(to top,rgba(10,6,16,0.98),rgba(26,18,32,0.96));
+  border-top:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-around;
+  padding:0 8px 18px;flex-shrink:0;
+  backdrop-filter:blur(20px);
+}
+.ni{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:6px 14px;opacity:0.3;transition:opacity 0.25s;}
+.ni.on{opacity:1;}
+.ni-ico{font-size:20px;color:var(--cream);}
+.ni.on .ni-ico{color:var(--gold);}
+.ni-lbl{font-family:'Figtree',sans-serif;font-size:9px;font-weight:300;letter-spacing:0.12em;text-transform:uppercase;color:var(--cream-dim);}
+.ni.on .ni-lbl{color:var(--gold-dim);}
+.ni-cam-center{opacity:1 !important;}
+.cam-btn-outer{
+  width:54px;height:54px;border-radius:50%;
+  background:linear-gradient(135deg,var(--gold) 0%,var(--rust) 100%);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 16px rgba(240,168,50,0.35);
+}
+.cam-btn-outer svg{color:var(--ink);}
+</style>
+</head>
+<body>
+<div class="label">VisionWeave <span>·</span> Style 03 <span>·</span> <em>Golden Drift</em> <span>·</span> Warm Editorial</div>
+
+<div class="phone">
+  <div class="island">
+    <div class="island-cam"></div>
+    <div class="island-mic"></div>
+  </div>
+  <div class="statusbar">
+    <span class="sb-time">6:42</span>
+    <div class="sb-icons"><span>●●●</span><span>WiFi</span><span>▮▮▮</span></div>
+  </div>
+
+  <div class="screens">
+    <!-- HOME -->
+    <div class="screen home active" id="s-home">
+      <div class="home-hero">
+        <div class="hero-blob hero-blob-1"></div>
+        <div class="hero-blob hero-blob-2"></div>
+        <div class="hero-blob hero-blob-3"></div>
+        <div class="hero-counter">
+          <div class="hc-num">16</div>
+          <div class="hc-label">mins</div>
+        </div>
+        <div class="hero-content">
+          <div class="hero-greeting">Good evening, Maya</div>
+          <div class="hero-title"><em>Golden hour</em><br>is almost here</div>
+          <div class="hero-pill">
+            <div class="hp-dot"></div>
+            <span class="hp-text">Perfect for your warm portrait style</span>
+            <span class="hp-arrow">›</span>
+          </div>
+        </div>
+      </div>
+      <div class="home-body">
+        <div class="sec-hd">
+          <div class="sec-hd-title">Spots near you</div>
+          <span class="sec-hd-link" onclick="go('spots')">See all</span>
+        </div>
+        <div class="row">
+          <div class="spc"><div class="spc-bg spc-bg-1"></div><div class="spc-ov"></div><div class="spc-body"><div class="spc-tag">Landscape</div><div class="spc-name">Riverside Promenade</div><div class="spc-dist">0.4 km away</div></div></div>
+          <div class="spc"><div class="spc-bg spc-bg-2"></div><div class="spc-ov"></div><div class="spc-body"><div class="spc-tag">Architecture</div><div class="spc-name">Old Bridge District</div><div class="spc-dist">1.2 km away</div></div></div>
+          <div class="spc"><div class="spc-bg spc-bg-3"></div><div class="spc-ov"></div><div class="spc-body"><div class="spc-tag">Street</div><div class="spc-name">Brick Lane Alley</div><div class="spc-dist">2.1 km away</div></div></div>
+        </div>
+        <div class="sec-hd" style="margin-top:8px;">
+          <div class="sec-hd-title">This week</div>
+        </div>
+        <div class="ev-cards">
+          <div class="evc">
+            <div class="evc-bar"></div>
+            <div class="evc-time"><div class="evc-t">6:58</div><div class="evc-ap">PM</div></div>
+            <div class="evc-body"><div class="evc-name">Golden Hour</div><div class="evc-desc">Warm side light · Soft shadows</div></div>
+            <div class="evc-badge now">Today</div>
+          </div>
+          <div class="evc locked">
+            <div class="evc-bar dim"></div>
+            <div class="evc-time"><div class="evc-t dim">7:02</div><div class="evc-ap">AM Tue</div></div>
+            <div class="evc-body"><div class="evc-name">Fog + Blue Hour</div><div class="evc-desc">Low visibility · Moody atmosphere</div></div>
+            <div class="evc-badge pro">Pro</div>
+          </div>
+          <div class="evc locked">
+            <div class="evc-bar dim"></div>
+            <div class="evc-time"><div class="evc-t dim">11:30</div><div class="evc-ap">PM Fri</div></div>
+            <div class="evc-body"><div class="evc-name">Milky Way Window</div><div class="evc-desc">Clear sky · New moon · Astro event</div></div>
+            <div class="evc-badge pro">Pro</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CAMERA -->
+    <div class="screen cam" id="s-camera">
+      <div class="vf">
+        <div class="atm-glow atm-1"></div>
+        <div class="atm-glow atm-2"></div>
+        <div class="guide-h" style="top:33.3%;"></div>
+        <div class="guide-h" style="top:66.6%;"></div>
+        <div class="guide-v" style="left:33.3%;"></div>
+        <div class="guide-v" style="left:66.6%;"></div>
+        <div class="subject-oval"></div>
+        <div class="cam-corner tl"></div>
+        <div class="cam-corner tr"></div>
+        <div class="cam-corner bl"></div>
+        <div class="cam-corner br"></div>
+        <div class="cam-pill">
+          <div class="cp-dot"></div>
+          <span class="cp-text">Golden hour · Sun SW · 16 mins</span>
+        </div>
+        <div class="guide-card">
+          <div class="gc-tag">Composition</div>
+          <div class="gc-text">Place your subject at left intersection — ideal for your warm portrait style</div>
+        </div>
+        <div class="sun-compass">
+          <div class="sun-ray"></div>
+          <div class="sun-core"></div>
+        </div>
+        <div class="cam-bottom">
+          <div class="cb-sec">⊞</div>
+          <div class="cb-main"><div class="cb-inner"></div></div>
+          <div class="cb-sec">↺</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUIZ -->
+    <div class="screen quiz" id="s-quiz">
+      <div class="q-header">
+        <div class="q-back">← Style profile</div>
+        <div class="q-step-label">Step 3 of 3 · Photo selection</div>
+        <div class="q-title">Which of these <em>move you?</em></div>
+        <div class="q-progress">
+          <div class="qpd on"></div><div class="qpd on"></div><div class="qpd on"></div>
+          <div class="qpd on"></div><div class="qpd on"></div><div class="qpd on"></div>
+          <div class="qpd on"></div><div class="qpd"></div><div class="qpd"></div>
+          <div class="qpd"></div><div class="qpd"></div><div class="qpd"></div>
+        </div>
+      </div>
+      <div class="q-body">
+        <div class="q-grid">
+          <div class="qc sel" onclick="this.classList.toggle('sel')"><div class="qc-bg qc-1"></div><div class="qc-ov"></div><div class="qc-label">Warm golden fields</div><div class="qc-check">✓</div></div>
+          <div class="qc" onclick="this.classList.toggle('sel')"><div class="qc-bg qc-2"></div><div class="qc-ov"></div><div class="qc-label">Blue hour serenity</div><div class="qc-check">✓</div></div>
+          <div class="qc" onclick="this.classList.toggle('sel')"><div class="qc-bg qc-3"></div><div class="qc-ov"></div><div class="qc-label">Forest whispers</div><div class="qc-check">✓</div></div>
+          <div class="qc sel" onclick="this.classList.toggle('sel')"><div class="qc-bg qc-4"></div><div class="qc-ov"></div><div class="qc-label">Urban twilight</div><div class="qc-check">✓</div></div>
+        </div>
+        <button class="q-cta">Continue →</button>
+      </div>
+    </div>
+
+    <!-- SPOTS -->
+    <div class="screen spots" id="s-spots">
+      <div class="map-hero">
+        <div class="map-blob map-blob-1"></div>
+        <div class="map-blob map-blob-2"></div>
+        <div class="map-grid-h" style="top:25%;"></div><div class="map-grid-h" style="top:55%;"></div><div class="map-grid-h" style="top:78%;"></div>
+        <div class="map-grid-v" style="left:22%;"></div><div class="map-grid-v" style="left:52%;"></div><div class="map-grid-v" style="left:78%;"></div>
+        <div class="map-pin" style="top:40%;left:34%;">
+          <div class="pin-outer lg"><div class="pin-inner"></div></div>
+          <div class="pin-lbl">Riverside</div>
+        </div>
+        <div class="map-pin" style="top:56%;left:60%;">
+          <div class="pin-outer"><div class="pin-inner"></div></div>
+          <div class="pin-lbl">Old Bridge</div>
+        </div>
+        <div class="map-pin" style="top:28%;left:68%;">
+          <div class="pin-outer"><div class="pin-inner"></div></div>
+        </div>
+        <div class="map-pin" style="top:66%;left:20%;">
+          <div class="pin-outer"><div class="pin-inner"></div></div>
+        </div>
+        <div class="map-header">
+          <div class="mh-title">Photo Spots</div>
+          <div class="mh-count">12 places near you</div>
+        </div>
+      </div>
+      <div class="spots-list">
+        <div class="sli"><div class="sli-thumb st-1"></div><div class="sli-info"><div class="sli-tag">Landscape · Golden Hour</div><div class="sli-name">Riverside Promenade</div><div class="sli-meta">0.4 km · ★★★★☆ · Best at sunset</div></div><div class="sli-arrow">›</div></div>
+        <div class="sli"><div class="sli-thumb st-2"></div><div class="sli-info"><div class="sli-tag">Architecture · Blue Hour</div><div class="sli-name">Old Bridge District</div><div class="sli-meta">1.2 km · Google Places · Best at dusk</div></div><div class="sli-arrow">›</div></div>
+        <div class="sli"><div class="sli-thumb st-3"></div><div class="sli-info"><div class="sli-tag">Street · Moody</div><div class="sli-name">Brick Lane Alley</div><div class="sli-meta">2.1 km · ★★★★★ · Any time</div></div><div class="sli-arrow">›</div></div>
+        <div class="sli"><div class="sli-thumb st-4"></div><div class="sli-info"><div class="sli-tag">Landscape · Sunrise</div><div class="sli-name">Victoria Park East</div><div class="sli-meta">2.8 km · Google Places · Best at sunrise</div></div><div class="sli-arrow">›</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bnav">
+    <div class="ni on" id="n-home" onclick="go('home')"><div class="ni-ico">⌂</div><div class="ni-lbl">Home</div></div>
+    <div class="ni" id="n-spots" onclick="go('spots')"><div class="ni-ico">◎</div><div class="ni-lbl">Spots</div></div>
+    <div class="ni ni-cam-center" id="n-camera" onclick="go('camera')">
+      <div class="cam-btn-outer">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3.5"/><path d="M9 2h6l2 3H7z"/><rect x="2" y="5" width="20" height="16" rx="2"/></svg>
+      </div>
+    </div>
+    <div class="ni" id="n-quiz" onclick="go('quiz')"><div class="ni-ico">◈</div><div class="ni-lbl">Style</div></div>
+    <div class="ni" id="n-profile"><div class="ni-ico">◉</div><div class="ni-lbl">Profile</div></div>
+  </div>
+</div>
+
+<script>
+function go(name){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
+  document.getElementById('s-'+name).classList.add('active');
+  const nav=document.getElementById('n-'+name);
+  if(nav)nav.classList.add('on');
+}
+</script>
+</body>
+</html>
