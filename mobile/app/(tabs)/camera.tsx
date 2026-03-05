@@ -32,8 +32,10 @@ export default function CameraScreen() {
     queryFn: () =>
       api.get('/guidance/scene', {
         params: {
-          azimuth: Math.round(sun.azimuth),
-          altitude: Math.round(sun.altitude),
+          lat: location.lat,
+          lng: location.lng,
+          sunAzimuth: Math.round(sun.azimuth),
+          sunAltitude: Math.round(sun.altitude),
           sceneLabel: sun.sceneLabel,
           isGoldenHour: sun.isGoldenHour,
           isBlueHour: sun.isBlueHour,
@@ -46,11 +48,13 @@ export default function CameraScreen() {
   const startSession = useCallback(async () => {
     try {
       const res = await api.post('/guidance/session/start', {
-        sceneLabel: sun.sceneLabel,
-        sunAzimuth: Math.round(sun.azimuth),
-        sunAltitude: Math.round(sun.altitude),
         lat: location.lat,
         lng: location.lng,
+        sceneContext: {
+          sceneLabel: sun.sceneLabel,
+          sunAzimuth: Math.round(sun.azimuth),
+          sunAltitude: Math.round(sun.altitude),
+        },
       });
       setSessionId(res.data.sessionId);
     } catch { /* non-critical */ }
@@ -59,7 +63,7 @@ export default function CameraScreen() {
   const endSession = useCallback(async () => {
     if (!sessionId) return;
     try {
-      await api.post(`/guidance/session/${sessionId}/end`, { photoCount: 1 });
+      await api.post(`/guidance/session/${sessionId}/end`, { overlaysShown: showOverlay ? 1 : 0, overlaysUsed: 0 });
     } catch { /* non-critical */ }
     setSessionId(null);
   }, [sessionId]);

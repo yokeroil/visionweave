@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   View, Text, Image, TouchableOpacity, StyleSheet,
   ActivityIndicator, Alert,
@@ -14,7 +14,7 @@ import { Colors, Spacing, Radii } from '../../src/constants/theme';
 const MAX_ROUNDS = 10;
 
 interface Photo { id: string; url: string; thumb: string; tags: string[]; alt: string; }
-const GRADIENTS = ['#3D1A0A,#C07020', '#0A1830,#2A5888', '#0A1A0A,#204020', '#1A0A20,#602A80'];
+const FALLBACK_COLORS = ['#3D1A0A', '#0A1830', '#0A1A0A', '#1A0A20'];
 
 export default function PhotoQuizScreen() {
   const { quizRound, nextRound, setQuizComplete } = useStyleStore();
@@ -23,9 +23,10 @@ export default function PhotoQuizScreen() {
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [submitting, setSubmitting] = useState(false);
 
-  const { data, isLoading, refetch } = useQuery({
+  const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ['quiz-photos', quizRound],
     queryFn: () => api.get(`/quiz/photos?round=${quizRound}`).then((r) => r.data.photos as Photo[]),
+    retry: 2,
   });
 
   const progress = Array.from({ length: MAX_ROUNDS }, (_, i) => i < quizRound);
@@ -34,9 +35,8 @@ export default function PhotoQuizScreen() {
     if (!data) return;
     setSubmitting(true);
     try {
-      // Submit all 4 responses
       for (const photo of data) {
-        if (!photo.url) continue; // skip fallbacks
+        if (!photo.url) continue;
         await api.post('/quiz/response', {
           photoId: photo.id,
           photoUrl: photo.url,
@@ -49,7 +49,6 @@ export default function PhotoQuizScreen() {
       setSelected(new Set());
 
       if (quizRound + 1 >= MAX_ROUNDS) {
-        // Complete quiz
         await api.post('/quiz/complete');
         track('quiz.completed', { totalRounds: MAX_ROUNDS });
         setQuizComplete(true);
@@ -74,6 +73,52 @@ export default function PhotoQuizScreen() {
     router.replace('/(tabs)');
   }
 
+  function renderContent() {
+    if (isLoading) {
+      return <View style={s.loading}><ActivityIndicator color={Colors.gold} size="large" /></View>;
+    }
+
+    if (isError || !data || data.length === 0) {
+      return (
+        <View style={s.errorState}>
+          <Text style={s.errorText}>Could not load photos</Text>
+          <TouchableOpacity style={s.retryBtn} onPress={() => refetch()}>
+            <Text style={s.retryText}>Tap to retry</Text>
+          </TouchableOpacity>
+        </View>
+      );
+    }
+
+    return (
+      <View style={s.grid}>
+        {data.map((photo, i) => {
+          const isSel = selected.has(photo.id);
+          return (
+            <TouchableOpacity
+              key={photo.id}
+              style={[s.card, isSel && s.cardSelected]}
+              onPress={() => {
+                const next = new Set(selected);
+                if (next.has(photo.id)) next.delete(photo.id); else next.add(photo.id);
+                setSelected(next);
+              }}>
+              {photo.url ? (
+                <Image source={{ uri: photo.url }} style={s.img} resizeMode="cover" />
+              ) : (
+                <View style={[s.img, { backgroundColor: FALLBACK_COLORS[i % FALLBACK_COLORS.length] }]} />
+              )}
+              <View style={s.imgOverlay} />
+              <Text style={s.photoAlt} numberOfLines={2}>{photo.alt}</Text>
+              {isSel && (
+                <View style={s.checkBadge}><Text style={s.checkText}>✓</Text></View>
+              )}
+            </TouchableOpacity>
+          );
+        })}
+      </View>
+    );
+  }
+
   return (
     <View style={s.container}>
       <View style={s.header}>
@@ -84,39 +129,10 @@ export default function PhotoQuizScreen() {
         </View>
       </View>
 
-      {isLoading ? (
-        <View style={s.loading}><ActivityIndicator color={Colors.gold} size="large" /></View>
-      ) : (
-        <View style={s.grid}>
-          {(data ?? []).map((photo, i) => {
-            const isSel = selected.has(photo.id);
-            return (
-              <TouchableOpacity
-                key={photo.id}
-                style={[s.card, isSel && s.cardSelected]}
-                onPress={() => {
-                  const next = new Set(selected);
-                  if (next.has(photo.id)) next.delete(photo.id); else next.add(photo.id);
-                  setSelected(next);
-                }}>
-                {photo.url ? (
-                  <Image source={{ uri: photo.url }} style={s.img} resizeMode="cover" />
-                ) : (
-                  <View style={[s.img, { background: GRADIENTS[i] }]} />
-                )}
-                <View style={s.imgOverlay} />
-                <Text style={s.photoAlt} numberOfLines={2}>{photo.alt}</Text>
-                {isSel && (
-                  <View style={s.checkBadge}><Text style={s.checkText}>✓</Text></View>
-                )}
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-      )}
+      {renderContent()}
 
       <View style={s.actions}>
-        <TouchableOpacity style={s.btn} onPress={handleNext} disabled={submitting || isLoading}>
+        <TouchableOpacity style={s.btn} onPress={handleNext} disabled={submitting || isLoading || isError || !data}>
           {submitting ? (
             <ActivityIndicator color={Colors.bg} />
           ) : (
@@ -141,6 +157,10 @@ const s = StyleSheet.create({
   progressDot: { flex: 1, height: 2, borderRadius: 1, backgroundColor: `${Colors.gold}20` },
   progressDotDone: { backgroundColor: Colors.gold },
   loading: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  errorState: { flex: 1, justifyContent: 'center', alignItems: 'center', gap: 16 },
+  errorText: { color: Colors.creamDim, fontSize: 15 },
+  retryBtn: { backgroundColor: Colors.card, borderRadius: Radii.md, paddingHorizontal: 24, paddingVertical: 12, borderWidth: 1, borderColor: Colors.gold },
+  retryText: { color: Colors.gold, fontSize: 14, fontWeight: '600' },
   grid: { flex: 1, flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
   card: {
     width: '48%', aspectRatio: 0.75, borderRadius: Radii.lg,
@@ -148,7 +168,7 @@ const s = StyleSheet.create({
   },
   cardSelected: { borderColor: Colors.gold, shadowColor: Colors.gold, shadowRadius: 12, shadowOpacity: 0.5, shadowOffset: { width: 0, height: 0 } },
   img: { ...StyleSheet.absoluteFillObject },
-  imgOverlay: { ...StyleSheet.absoluteFillObject, background: 'linear-gradient(to top, rgba(0,0,0,0.7), transparent)' },
+  imgOverlay: { ...StyleSheet.absoluteFillObject, backgroundColor: 'rgba(0,0,0,0.25)' },
   photoAlt: { position: 'absolute', bottom: 10, left: 10, right: 10, color: Colors.cream, fontSize: 12, fontStyle: 'italic' },
   checkBadge: {
     position: 'absolute', top: 10, right: 10, width: 28, height: 28,
