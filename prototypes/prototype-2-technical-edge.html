@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VisionWeave — Style 02: Technical Edge</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#030404;
+  --panel:#0A0D0D;
+  --border:#1A2020;
+  --amber:#FFB300;
+  --amber-dim:rgba(255,179,0,0.5);
+  --amber-glow:rgba(255,179,0,0.12);
+  --green:#00E5A0;
+  --white:#E8EFEF;
+  --dim:rgba(232,239,239,0.35);
+}
+
+body{
+  background:var(--bg);
+  display:flex;flex-direction:column;align-items:center;
+  min-height:100vh;padding:40px 20px 60px;
+  font-family:'Share Tech Mono',monospace;
+}
+
+/* scanline effect */
+body::before{
+  content:'';position:fixed;inset:0;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.04) 2px,rgba(0,0,0,0.04) 4px);
+  pointer-events:none;z-index:9998;
+}
+
+.label{
+  font-family:'Share Tech Mono',monospace;font-size:11px;
+  letter-spacing:0.3em;color:var(--amber);opacity:0.6;
+  text-transform:uppercase;margin-bottom:28px;text-align:center;
+}
+.label span{color:rgba(255,179,0,0.25);margin:0 8px;}
+
+/* PHONE */
+.phone{
+  width:390px;height:844px;
+  background:var(--bg);
+  border-radius:12px;
+  border:1px solid var(--border);
+  box-shadow:0 0 0 1px rgba(255,179,0,0.06),0 60px 120px rgba(0,0,0,0.9),inset 0 0 40px rgba(255,179,0,0.02);
+  overflow:hidden;position:relative;display:flex;flex-direction:column;
+}
+/* corner accent marks */
+.phone::before,.phone::after{
+  content:'';position:absolute;
+  width:18px;height:18px;
+  border-color:var(--amber);border-style:solid;
+  opacity:0.5;z-index:100;
+}
+.phone::before{top:8px;left:8px;border-width:1px 0 0 1px;}
+.phone::after{bottom:8px;right:8px;border-width:0 1px 1px 0;}
+
+.statusbar{
+  height:46px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 20px;flex-shrink:0;
+  border-bottom:1px solid var(--border);
+  background:var(--panel);
+}
+.time-block{display:flex;align-items:baseline;gap:6px;}
+.sb-time{font-family:'Share Tech Mono',monospace;font-size:16px;color:var(--amber);letter-spacing:0.1em;}
+.sb-date{font-family:'Share Tech Mono',monospace;font-size:10px;color:var(--dim);letter-spacing:0.1em;}
+.sb-right{display:flex;align-items:center;gap:12px;}
+.sb-tag{font-size:10px;color:var(--dim);letter-spacing:0.1em;}
+.sb-dot{width:6px;height:6px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);}
+
+.screens{flex:1;overflow:hidden;position:relative;}
+.screen{position:absolute;inset:0;overflow-y:auto;opacity:0;pointer-events:none;transition:opacity 0.25s;scrollbar-width:none;}
+.screen::-webkit-scrollbar{display:none;}
+.screen.active{opacity:1;pointer-events:all;}
+
+/* ── HOME ── */
+.home{background:var(--bg);padding:0 0 90px;}
+
+.hud-bar{
+  background:var(--panel);border-bottom:1px solid var(--border);
+  padding:14px 18px;display:flex;justify-content:space-between;align-items:center;
+}
+.hud-bar-left .system-id{font-size:10px;letter-spacing:0.2em;color:var(--dim);margin-bottom:4px;}
+.hud-bar-left .user-id{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--white);letter-spacing:0.05em;}
+.hud-bar-left .user-id span{color:var(--amber);}
+.hud-avatar{
+  width:36px;height:36px;border:1px solid var(--amber);
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(255,179,0,0.08);
+}
+.hud-avatar span{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--amber);}
+
+.main-readout{
+  margin:16px 18px;
+  background:var(--panel);border:1px solid var(--border);
+  position:relative;overflow:hidden;
+}
+/* horizontal scan animation */
+.main-readout::after{
+  content:'';position:absolute;
+  left:0;right:0;height:2px;
+  background:linear-gradient(to right,transparent 0%,rgba(255,179,0,0.6) 50%,transparent 100%);
+  animation:scan 3s linear infinite;
+}
+@keyframes scan{0%{top:-2px;}100%{top:102%}}
+
+.readout-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 16px;border-bottom:1px solid var(--border);
+}
+.readout-header .rh-label{font-size:10px;letter-spacing:0.25em;color:var(--dim);text-transform:uppercase;}
+.readout-header .rh-status{
+  display:flex;align-items:center;gap:6px;
+  font-size:10px;color:var(--green);letter-spacing:0.1em;
+}
+.rh-dot{width:5px;height:5px;border-radius:50%;background:var(--green);box-shadow:0 0 6px var(--green);}
+
+.readout-body{padding:16px;}
+.readout-time-label{font-size:10px;letter-spacing:0.25em;color:var(--dim);margin-bottom:6px;}
+.readout-headline{
+  font-family:'Syne',sans-serif;font-size:26px;font-weight:800;
+  color:var(--amber);line-height:1.1;margin-bottom:12px;letter-spacing:-0.01em;
+}
+.readout-headline span{color:var(--white);}
+.data-row{display:flex;gap:0;margin-bottom:12px;}
+.data-cell{flex:1;padding:10px 12px;border:1px solid var(--border);margin-right:-1px;}
+.data-cell:last-child{margin-right:0;}
+.dc-label{font-size:9px;letter-spacing:0.2em;color:var(--dim);text-transform:uppercase;margin-bottom:4px;}
+.dc-value{font-family:'Syne',sans-serif;font-size:15px;font-weight:700;color:var(--white);}
+.dc-value.amber{color:var(--amber);}
+.dc-value.green{color:var(--green);}
+
+.readout-alert{
+  display:flex;align-items:center;gap:10px;
+  background:rgba(255,179,0,0.06);border:1px solid rgba(255,179,0,0.2);
+  padding:10px 14px;margin-top:4px;
+}
+.alert-blink{width:8px;height:8px;background:var(--amber);animation:blink 1s step-end infinite;flex-shrink:0;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+.alert-text{font-size:12px;color:var(--amber);letter-spacing:0.05em;line-height:1.4;}
+
+/* section */
+.section{margin:16px 18px;}
+.sec-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+.sec-hdr .sh-label{font-size:10px;letter-spacing:0.25em;color:var(--dim);text-transform:uppercase;}
+.sec-hdr .sh-count{font-size:10px;color:var(--amber);letter-spacing:0.1em;}
+
+.scroll-row{display:flex;gap:10px;overflow-x:auto;margin:0 -18px;padding:0 18px 10px;scrollbar-width:none;}
+.scroll-row::-webkit-scrollbar{display:none;}
+
+.tc{min-width:150px;height:190px;border:1px solid var(--border);position:relative;overflow:hidden;cursor:pointer;flex-shrink:0;transition:border-color 0.2s;}
+.tc:hover{border-color:var(--amber);}
+.tc-bg{position:absolute;inset:0;}
+.tc-bg-1{background:linear-gradient(170deg,#0D0800,#1A1200,#3D2A00,#6B4A00);}
+.tc-bg-2{background:linear-gradient(170deg,#000D1A,#001428,#001E3D,#00316A);}
+.tc-bg-3{background:linear-gradient(170deg,#0D0000,#1A0800,#3D1500,#6B2800);}
+.tc-scan{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.15) 3px,rgba(0,0,0,0.15) 4px);}
+.tc-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.88) 0%,transparent 55%);}
+.tc-body{position:absolute;bottom:0;left:0;right:0;padding:12px 10px;}
+.tc-tag{font-size:9px;letter-spacing:0.2em;color:var(--amber);text-transform:uppercase;margin-bottom:4px;}
+.tc-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:600;color:var(--white);line-height:1.2;}
+.tc-dist{font-size:10px;color:var(--dim);margin-top:3px;letter-spacing:0.05em;}
+.tc-corner{position:absolute;top:8px;right:8px;width:14px;height:14px;border-top:1px solid var(--amber);border-right:1px solid var(--amber);opacity:0.6;}
+
+.timeline{display:flex;flex-direction:column;gap:0;}
+.tl-item{
+  display:flex;align-items:stretch;gap:0;
+  border:1px solid var(--border);margin-bottom:-1px;
+  cursor:pointer;transition:background 0.2s;
+}
+.tl-item:hover{background:rgba(255,179,0,0.03);}
+.tl-item.locked{opacity:0.45;}
+.tl-time{
+  min-width:62px;padding:14px 12px;
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+}
+.tl-t{font-family:'Syne',sans-serif;font-size:16px;font-weight:700;color:var(--amber);}
+.tl-t.dim{color:var(--dim);}
+.tl-ap{font-size:9px;color:var(--dim);letter-spacing:0.1em;}
+.tl-body{flex:1;padding:14px 12px;display:flex;justify-content:space-between;align-items:center;}
+.tl-event{font-family:'Syne',sans-serif;font-size:13px;font-weight:600;color:var(--white);margin-bottom:3px;}
+.tl-meta{font-size:10px;color:var(--dim);letter-spacing:0.05em;}
+.tl-badge{font-size:9px;padding:4px 8px;letter-spacing:0.1em;border:1px solid;}
+.tl-badge.live{color:var(--green);border-color:rgba(0,229,160,0.35);background:rgba(0,229,160,0.06);}
+.tl-badge.pro{color:var(--dim);border-color:var(--border);}
+
+/* ── CAMERA ── */
+.cam{background:#000;position:relative;height:100%;}
+.vf{position:absolute;inset:0;background:linear-gradient(175deg,#060F18 0%,#0C1820 40%,#101808 100%);}
+.vf-noise{
+  position:absolute;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  opacity:0.5;pointer-events:none;
+}
+
+/* HUD overlay */
+.cam-hud{position:absolute;inset:0;pointer-events:none;}
+/* Grid crosshair */
+.hud-h{position:absolute;left:0;right:0;height:1px;background:rgba(255,179,0,0.18);}
+.hud-v{position:absolute;top:0;bottom:0;width:1px;background:rgba(255,179,0,0.18);}
+/* Reticle center */
+.reticle{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:40px;height:40px;
+}
+.reticle-h,.reticle-v{position:absolute;background:rgba(255,179,0,0.5);}
+.reticle-h{top:50%;left:0;right:0;height:1px;}
+.reticle-v{left:50%;top:0;bottom:0;width:1px;}
+.reticle-c{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:8px;height:8px;border:1px solid rgba(255,179,0,0.7);
+}
+
+/* Corner brackets */
+.hud-brk{position:absolute;width:20px;height:20px;border-color:var(--amber);border-style:solid;opacity:0.75;}
+.hud-brk-tl{top:14px;left:14px;border-width:1px 0 0 1px;}
+.hud-brk-tr{top:14px;right:14px;border-width:1px 1px 0 0;}
+.hud-brk-bl{bottom:110px;left:14px;border-width:0 0 1px 1px;}
+.hud-brk-br{bottom:110px;right:14px;border-width:0 1px 1px 0;}
+
+/* Top readout */
+.cam-top{
+  position:absolute;top:0;left:0;right:0;
+  background:linear-gradient(to bottom,rgba(0,0,0,0.75),transparent);
+  padding:56px 16px 20px;display:flex;justify-content:space-between;align-items:flex-start;
+}
+.cam-data-left,.cam-data-right{display:flex;flex-direction:column;gap:4px;}
+.cam-data-item{
+  background:rgba(0,0,0,0.6);border:1px solid rgba(255,179,0,0.2);
+  padding:5px 10px;display:flex;gap:8px;align-items:center;
+}
+.cdi-label{font-size:9px;letter-spacing:0.2em;color:var(--dim);}
+.cdi-value{font-family:'Syne',sans-serif;font-size:12px;font-weight:700;color:var(--amber);}
+.cdi-value.grn{color:var(--green);}
+
+/* Center guidance */
+.cam-guide{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-130%);
+  background:rgba(0,0,0,0.72);border:1px solid rgba(255,179,0,0.3);
+  padding:8px 14px;max-width:260px;text-align:center;
+}
+.cg-label{font-size:9px;letter-spacing:0.2em;color:var(--amber);text-transform:uppercase;margin-bottom:3px;}
+.cg-text{font-size:12px;color:var(--white);line-height:1.4;}
+
+/* Sun bearing */
+.sun-bearing{
+  position:absolute;right:16px;top:50%;transform:translateY(-50%);
+  width:44px;
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+}
+.bearing-ring{
+  width:44px;height:44px;border:1px solid rgba(255,179,0,0.4);
+  border-radius:50%;position:relative;
+  background:rgba(0,0,0,0.6);
+}
+.bearing-dot{
+  position:absolute;width:6px;height:6px;background:var(--amber);border-radius:50%;
+  top:4px;left:50%;transform:translateX(-50%);
+  box-shadow:0 0 6px var(--amber);
+}
+.bearing-cross-h{position:absolute;top:50%;left:0;right:0;height:1px;background:rgba(255,179,0,0.2);}
+.bearing-cross-v{position:absolute;left:50%;top:0;bottom:0;width:1px;background:rgba(255,179,0,0.2);}
+.bearing-label{font-size:9px;color:var(--dim);letter-spacing:0.1em;text-align:center;}
+
+/* Exposure meter */
+.exp-meter{
+  position:absolute;left:16px;top:50%;transform:translateY(-50%);
+  width:18px;height:120px;
+  border:1px solid rgba(255,179,0,0.25);
+  background:rgba(0,0,0,0.5);
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:2px;
+}
+.exp-fill{
+  background:linear-gradient(to top,var(--amber),rgba(255,179,0,0.3));
+  height:62%;border-radius:1px;
+  transition:height 0.5s ease;
+}
+.exp-label{position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:8px;color:var(--dim);white-space:nowrap;}
+
+/* Bottom controls */
+.cam-bottom{
+  position:absolute;bottom:0;left:0;right:0;
+  background:linear-gradient(to top,rgba(0,0,0,0.9),transparent);
+  height:130px;display:flex;align-items:center;justify-content:center;gap:32px;padding-bottom:14px;
+}
+.cb-s{
+  width:44px;height:44px;background:rgba(255,255,255,0.05);
+  border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--white);font-size:16px;cursor:pointer;
+}
+.cb-m{
+  width:70px;height:70px;
+  border:1px solid var(--amber);
+  background:rgba(255,179,0,0.05);
+  display:flex;align-items:center;justify-content:center;cursor:pointer;
+  position:relative;
+  transition:background 0.15s;
+}
+.cb-m:hover{background:rgba(255,179,0,0.1);}
+.cb-m-in{width:50px;height:50px;background:var(--amber);opacity:0.9;}
+
+/* ── QUIZ ── */
+.quiz{background:var(--bg);padding:0 0 90px;min-height:100%;}
+.quiz-hdr{
+  background:var(--panel);border-bottom:1px solid var(--border);
+  padding:16px 18px;
+}
+.q-back{font-size:10px;letter-spacing:0.25em;color:var(--amber);text-transform:uppercase;margin-bottom:12px;cursor:pointer;}
+.q-sys{font-size:10px;letter-spacing:0.2em;color:var(--dim);margin-bottom:6px;}
+.q-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--white);line-height:1.2;}
+.q-title span{color:var(--amber);}
+.q-prog{display:flex;gap:3px;margin-top:12px;}
+.qpd{height:2px;flex:1;background:rgba(255,179,0,0.12);}
+.qpd.on{background:var(--amber);}
+
+.q-body{padding:16px 18px;}
+.q-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;}
+.qc{border:1px solid var(--border);aspect-ratio:3/4;position:relative;overflow:hidden;cursor:pointer;transition:border-color 0.2s;}
+.qc:hover{border-color:rgba(255,179,0,0.4);}
+.qc.sel{border-color:var(--amber);box-shadow:0 0 16px rgba(255,179,0,0.2),inset 0 0 16px rgba(255,179,0,0.05);}
+.qc-bg{position:absolute;inset:0;}
+.qc-scan{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.12) 3px,rgba(0,0,0,0.12) 4px);}
+.qc-1{background:linear-gradient(160deg,#1A0E00,#3D2A00,#7A5500,#C48A00);}
+.qc-2{background:linear-gradient(160deg,#000A18,#001428,#002040,#003060);}
+.qc-3{background:linear-gradient(160deg,#000A00,#001800,#003000,#005000);}
+.qc-4{background:linear-gradient(160deg,#0A0010,#1A0025,#300040,#4A0060);}
+.qc-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.85) 0%,transparent 50%);}
+.qc-label{position:absolute;bottom:0;left:0;right:0;padding:10px;font-size:11px;color:var(--white);letter-spacing:0.05em;}
+.qc-sel-mark{
+  position:absolute;top:8px;right:8px;width:20px;height:20px;
+  background:var(--amber);display:none;align-items:center;justify-content:center;
+  font-family:'Syne',sans-serif;font-size:11px;font-weight:700;color:var(--bg);
+}
+.qc.sel .qc-sel-mark{display:flex;}
+.qc-brk{position:absolute;top:6px;left:6px;width:12px;height:12px;border-top:1px solid var(--amber);border-left:1px solid var(--amber);opacity:0;transition:opacity 0.2s;}
+.qc.sel .qc-brk,.qc:hover .qc-brk{opacity:0.8;}
+
+.q-submit{
+  width:100%;padding:16px;border:1px solid var(--amber);background:rgba(255,179,0,0.08);
+  font-family:'Syne',sans-serif;font-size:14px;font-weight:700;
+  color:var(--amber);cursor:pointer;letter-spacing:0.15em;text-transform:uppercase;
+  transition:background 0.2s;
+}
+.q-submit:hover{background:rgba(255,179,0,0.16);}
+
+/* ── SPOTS ── */
+.spots{background:var(--bg);display:flex;flex-direction:column;height:100%;}
+.map-area{
+  height:280px;flex-shrink:0;position:relative;overflow:hidden;
+  background:linear-gradient(170deg,#030605,#040806,#030504);
+}
+.map-scan{position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 4px,rgba(0,0,0,0.08) 4px,rgba(0,0,0,0.08) 5px);}
+.map-grid-h{position:absolute;left:0;right:0;height:1px;background:rgba(255,179,0,0.06);}
+.map-grid-v{position:absolute;top:0;bottom:0;width:1px;background:rgba(255,179,0,0.06);}
+.map-sweep{
+  position:absolute;top:50%;left:50%;
+  width:200px;height:200px;
+  margin:-100px 0 0 -100px;
+  border-radius:50%;
+  border:1px solid rgba(255,179,0,0.1);
+  animation:sweep 4s linear infinite;
+}
+.map-sweep::after{
+  content:'';position:absolute;
+  top:50%;left:50%;
+  width:50%;height:1px;
+  background:linear-gradient(to right,rgba(255,179,0,0.5),transparent);
+  transform-origin:left center;
+  animation:rotate 4s linear infinite;
+}
+@keyframes sweep{0%,100%{opacity:0.6;}50%{opacity:0.3;}}
+@keyframes rotate{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+
+.map-pin{position:absolute;display:flex;flex-direction:column;align-items:center;cursor:pointer;}
+.mp-dot{width:8px;height:8px;background:var(--amber);box-shadow:0 0 8px var(--amber);}
+.mp-dot.lg{width:11px;height:11px;}
+.mp-lbl{font-size:9px;color:var(--amber);background:rgba(0,0,0,0.85);border:1px solid rgba(255,179,0,0.25);padding:2px 6px;margin-top:3px;letter-spacing:0.1em;white-space:nowrap;}
+
+.map-hdr{
+  position:absolute;top:0;left:0;right:0;
+  background:rgba(0,0,0,0.6);border-bottom:1px solid var(--border);
+  padding:10px 16px;display:flex;justify-content:space-between;align-items:center;z-index:2;
+}
+.map-hdr-title{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--white);letter-spacing:0.05em;}
+.map-hdr-count{font-size:10px;color:var(--amber);letter-spacing:0.15em;}
+
+.slist{flex:1;overflow-y:auto;scrollbar-width:none;}
+.slist::-webkit-scrollbar{display:none;}
+.sli{
+  display:flex;align-items:center;gap:0;
+  border-bottom:1px solid var(--border);cursor:pointer;
+  transition:background 0.15s;
+}
+.sli:hover{background:rgba(255,179,0,0.03);}
+.sli-thumb{width:72px;height:72px;flex-shrink:0;position:relative;overflow:hidden;}
+.sl-t1{background:linear-gradient(135deg,#1A0E00,#6B4A00);}
+.sl-t2{background:linear-gradient(135deg,#000A18,#00316A);}
+.sl-t3{background:linear-gradient(135deg,#100010,#4A0060);}
+.sl-t4{background:linear-gradient(135deg,#000A00,#005000);}
+.sli-thumb::after{content:'';position:absolute;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.15) 3px,rgba(0,0,0,0.15) 4px);}
+.sli-body{flex:1;padding:14px 14px;}
+.sli-tag{font-size:9px;letter-spacing:0.2em;color:var(--amber);text-transform:uppercase;margin-bottom:5px;}
+.sli-name{font-family:'Syne',sans-serif;font-size:14px;font-weight:600;color:var(--white);margin-bottom:4px;}
+.sli-meta{font-size:10px;color:var(--dim);letter-spacing:0.05em;}
+.sli-arrow{padding:0 14px;color:var(--border);font-size:16px;}
+
+/* ── BOTTOM NAV ── */
+.bnav{
+  height:80px;background:var(--panel);
+  border-top:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-around;
+  padding:0 8px 14px;flex-shrink:0;
+}
+.ni{display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;padding:6px 14px;opacity:0.35;transition:opacity 0.2s;}
+.ni.on{opacity:1;}
+.ni-ico{font-size:18px;color:var(--white);}
+.ni.on .ni-ico{color:var(--amber);}
+.ni-lbl{font-size:8px;letter-spacing:0.2em;text-transform:uppercase;color:var(--dim);}
+.ni.on .ni-lbl{color:var(--amber);}
+.ni-cam-wrap{opacity:1 !important;}
+.cam-sq{
+  width:46px;height:46px;border:1px solid var(--amber);
+  background:rgba(255,179,0,0.08);
+  display:flex;align-items:center;justify-content:center;
+}
+.cam-sq svg{color:var(--amber);}
+</style>
+</head>
+<body>
+<div class="label">VisionWeave <span>//</span> Style 02 <span>//</span> Technical Edge <span>//</span> Camera HUD</div>
+
+<div class="phone">
+  <div class="statusbar">
+    <div class="time-block">
+      <span class="sb-time">06:42</span>
+      <span class="sb-date">MON 03.03</span>
+    </div>
+    <div class="sb-right">
+      <span class="sb-tag">GPS LOCK</span>
+      <div class="sb-dot"></div>
+      <span class="sb-tag">SIG:100%</span>
+    </div>
+  </div>
+
+  <div class="screens">
+    <!-- HOME -->
+    <div class="screen home active" id="s-home">
+      <div class="hud-bar">
+        <div class="hud-bar-left">
+          <div class="system-id">SYSTEM // VISIONWEAVE v1.0</div>
+          <div class="user-id">USER_<span>MAYA</span></div>
+        </div>
+        <div class="hud-avatar"><span>M</span></div>
+      </div>
+      <div class="main-readout">
+        <div class="readout-header">
+          <span class="rh-label">LIGHT CONDITIONS // ACTIVE ANALYSIS</span>
+          <div class="rh-status"><div class="rh-dot"></div>LIVE</div>
+        </div>
+        <div class="readout-body">
+          <div class="readout-time-label">TODAY // 18:42 LOCAL</div>
+          <div class="readout-headline">GOLDEN<br><span>HOUR INCOMING</span></div>
+          <div class="data-row">
+            <div class="data-cell"><div class="dc-label">Sunset</div><div class="dc-value amber">18:58</div></div>
+            <div class="data-cell"><div class="dc-label">ETA</div><div class="dc-value amber">16 MIN</div></div>
+            <div class="data-cell"><div class="dc-label">Cloud</div><div class="dc-value green">12%</div></div>
+          </div>
+          <div class="readout-alert">
+            <div class="alert-blink"></div>
+            <div class="alert-text">Optimal for warm portrait style — position at SW facing location</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="sec-hdr">
+          <span class="sh-label">NEARBY SPOTS // LOCATION SCAN</span>
+          <span class="sh-count" onclick="go('spots')" style="cursor:pointer">VIEW ALL →</span>
+        </div>
+        <div class="scroll-row">
+          <div class="tc"><div class="tc-bg tc-bg-1"></div><div class="tc-scan"></div><div class="tc-ov"></div><div class="tc-corner"></div><div class="tc-body"><div class="tc-tag">Landscape</div><div class="tc-name">Riverside Promenade</div><div class="tc-dist">0.4 KM // SUNSET OPTIMAL</div></div></div>
+          <div class="tc"><div class="tc-bg tc-bg-2"></div><div class="tc-scan"></div><div class="tc-ov"></div><div class="tc-corner"></div><div class="tc-body"><div class="tc-tag">Architecture</div><div class="tc-name">Old Bridge District</div><div class="tc-dist">1.2 KM // DUSK OPTIMAL</div></div></div>
+          <div class="tc"><div class="tc-bg tc-bg-3"></div><div class="tc-scan"></div><div class="tc-ov"></div><div class="tc-corner"></div><div class="tc-body"><div class="tc-tag">Street</div><div class="tc-name">Brick Lane Alley</div><div class="tc-dist">2.1 KM // ALL DAY</div></div></div>
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="sec-hdr"><span class="sh-label">UPCOMING EVENTS // FORECAST</span></div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-time"><div class="tl-t">18:58</div><div class="tl-ap">TODAY</div></div>
+            <div class="tl-body">
+              <div><div class="tl-event">Golden Hour</div><div class="tl-meta">Warm side light · Soft shadows · SW exposure</div></div>
+              <div class="tl-badge live">LIVE</div>
+            </div>
+          </div>
+          <div class="tl-item locked">
+            <div class="tl-time"><div class="tl-t dim">07:02</div><div class="tl-ap">TUE</div></div>
+            <div class="tl-body">
+              <div><div class="tl-event">Fog + Blue Hour</div><div class="tl-meta">70% fog probability · Moody conditions</div></div>
+              <div class="tl-badge pro">PRO</div>
+            </div>
+          </div>
+          <div class="tl-item locked">
+            <div class="tl-time"><div class="tl-t dim">23:30</div><div class="tl-ap">FRI</div></div>
+            <div class="tl-body">
+              <div><div class="tl-event">Milky Way Window</div><div class="tl-meta">Bortle 3 · Zero cloud · New moon</div></div>
+              <div class="tl-badge pro">PRO</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CAMERA -->
+    <div class="screen cam" id="s-camera">
+      <div class="vf">
+        <div class="vf-noise"></div>
+        <div class="cam-hud">
+          <div class="hud-h" style="top:33.3%;"></div>
+          <div class="hud-h" style="top:66.6%;"></div>
+          <div class="hud-v" style="left:33.3%;"></div>
+          <div class="hud-v" style="left:66.6%;"></div>
+          <div class="reticle">
+            <div class="reticle-h"></div><div class="reticle-v"></div>
+            <div class="reticle-c"></div>
+          </div>
+          <div class="hud-brk hud-brk-tl"></div><div class="hud-brk hud-brk-tr"></div>
+          <div class="hud-brk hud-brk-bl"></div><div class="hud-brk hud-brk-br"></div>
+        </div>
+        <div class="cam-top">
+          <div class="cam-data-left">
+            <div class="cam-data-item"><span class="cdi-label">SCENE</span><span class="cdi-value">GOLDEN HR</span></div>
+            <div class="cam-data-item"><span class="cdi-label">SUN AZ</span><span class="cdi-value">SW 42°</span></div>
+            <div class="cam-data-item"><span class="cdi-label">LIGHT</span><span class="cdi-value grn">OPTIMAL</span></div>
+          </div>
+          <div class="cam-data-right">
+            <div class="cam-data-item"><span class="cdi-label">COMP</span><span class="cdi-value">RULE/3</span></div>
+            <div class="cam-data-item"><span class="cdi-label">GPS</span><span class="cdi-value grn">LOCKED</span></div>
+          </div>
+        </div>
+        <div class="cam-guide">
+          <div class="cg-label">AI GUIDANCE</div>
+          <div class="cg-text">Move subject to left intersection point — matches your portrait profile</div>
+        </div>
+        <div class="sun-bearing">
+          <div class="bearing-ring">
+            <div class="bearing-cross-h"></div><div class="bearing-cross-v"></div>
+            <div class="bearing-dot"></div>
+          </div>
+          <div class="bearing-label">SUN<br>SW</div>
+        </div>
+        <div class="exp-meter">
+          <span class="exp-label">EV</span>
+          <div class="exp-fill"></div>
+        </div>
+        <div class="cam-bottom">
+          <div class="cb-s">⊞</div>
+          <div class="cb-m"><div class="cb-m-in"></div></div>
+          <div class="cb-s">↺</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUIZ -->
+    <div class="screen quiz" id="s-quiz">
+      <div class="quiz-hdr">
+        <div class="q-back">&lt; BACK</div>
+        <div class="q-sys">STYLE CALIBRATION // SEQUENCE 3/3</div>
+        <div class="q-title">SELECT <span>RESONANT</span><br>COMPOSITIONS</div>
+        <div class="q-prog">
+          <div class="qpd on"></div><div class="qpd on"></div><div class="qpd on"></div>
+          <div class="qpd on"></div><div class="qpd on"></div><div class="qpd on"></div>
+          <div class="qpd on"></div><div class="qpd"></div><div class="qpd"></div>
+          <div class="qpd"></div><div class="qpd"></div><div class="qpd"></div>
+        </div>
+      </div>
+      <div class="q-body">
+        <div class="q-grid">
+          <div class="qc sel" onclick="this.classList.toggle('sel')"><div class="qc-bg qc-1"></div><div class="qc-scan"></div><div class="qc-ov"></div><div class="qc-label">WARM GOLDEN FIELDS</div><div class="qc-sel-mark">✓</div><div class="qc-brk"></div></div>
+          <div class="qc" onclick="this.classList.toggle('sel')"><div class="qc-bg qc-2"></div><div class="qc-scan"></div><div class="qc-ov"></div><div class="qc-label">BLUE HOUR SERENITY</div><div class="qc-sel-mark">✓</div><div class="qc-brk"></div></div>
+          <div class="qc" onclick="this.classList.toggle('sel')"><div class="qc-bg qc-3"></div><div class="qc-scan"></div><div class="qc-ov"></div><div class="qc-label">FOREST WHISPERS</div><div class="qc-sel-mark">✓</div><div class="qc-brk"></div></div>
+          <div class="qc sel" onclick="this.classList.toggle('sel')"><div class="qc-bg qc-4"></div><div class="qc-scan"></div><div class="qc-ov"></div><div class="qc-label">URBAN TWILIGHT</div><div class="qc-sel-mark">✓</div><div class="qc-brk"></div></div>
+        </div>
+        <button class="q-submit">CONFIRM SELECTION →</button>
+      </div>
+    </div>
+
+    <!-- SPOTS -->
+    <div class="screen spots" id="s-spots">
+      <div class="map-area">
+        <div class="map-scan"></div>
+        <div class="map-grid-h" style="top:25%;"></div><div class="map-grid-h" style="top:50%;"></div><div class="map-grid-h" style="top:75%;"></div>
+        <div class="map-grid-v" style="left:20%;"></div><div class="map-grid-v" style="left:50%;"></div><div class="map-grid-v" style="left:78%;"></div>
+        <div class="map-sweep"></div>
+        <div class="map-pin" style="top:42%;left:36%;"><div class="mp-dot lg"></div><div class="mp-lbl">RIVERSIDE</div></div>
+        <div class="map-pin" style="top:58%;left:62%;"><div class="mp-dot"></div><div class="mp-lbl">OLD BRIDGE</div></div>
+        <div class="map-pin" style="top:30%;left:70%;"><div class="mp-dot"></div></div>
+        <div class="map-pin" style="top:68%;left:22%;"><div class="mp-dot"></div></div>
+        <div class="map-hdr">
+          <div class="map-hdr-title">PHOTO SPOTS</div>
+          <div class="map-hdr-count">12 TARGETS FOUND</div>
+        </div>
+      </div>
+      <div class="slist">
+        <div class="sli"><div class="sli-thumb sl-t1"></div><div class="sli-body"><div class="sli-tag">Landscape // Golden Hour</div><div class="sli-name">Riverside Promenade</div><div class="sli-meta">0.4 KM // ★★★★☆ // SUNSET OPTIMAL</div></div><div class="sli-arrow">›</div></div>
+        <div class="sli"><div class="sli-thumb sl-t2"></div><div class="sli-body"><div class="sli-tag">Architecture // Blue Hour</div><div class="sli-name">Old Bridge District</div><div class="sli-meta">1.2 KM // GOOGLE PLACES // DUSK OPTIMAL</div></div><div class="sli-arrow">›</div></div>
+        <div class="sli"><div class="sli-thumb sl-t3"></div><div class="sli-body"><div class="sli-tag">Street // Moody</div><div class="sli-name">Brick Lane Alley</div><div class="sli-meta">2.1 KM // ★★★★★ // ALL HOURS</div></div><div class="sli-arrow">›</div></div>
+        <div class="sli"><div class="sli-thumb sl-t4"></div><div class="sli-body"><div class="sli-tag">Landscape // Sunrise</div><div class="sli-name">Victoria Park East</div><div class="sli-meta">2.8 KM // GOOGLE PLACES // SUNRISE OPTIMAL</div></div><div class="sli-arrow">›</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bnav">
+    <div class="ni on" id="n-home" onclick="go('home')"><div class="ni-ico">⌂</div><div class="ni-lbl">Home</div></div>
+    <div class="ni" id="n-spots" onclick="go('spots')"><div class="ni-ico">◎</div><div class="ni-lbl">Spots</div></div>
+    <div class="ni ni-cam-wrap" id="n-camera" onclick="go('camera')">
+      <div class="cam-sq">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3.5"/><path d="M9 2h6l2 3H7z"/><rect x="2" y="5" width="20" height="16" rx="2"/></svg>
+      </div>
+    </div>
+    <div class="ni" id="n-quiz" onclick="go('quiz')"><div class="ni-ico">◈</div><div class="ni-lbl">Style</div></div>
+    <div class="ni" id="n-profile"><div class="ni-ico">◉</div><div class="ni-lbl">Profile</div></div>
+  </div>
+</div>
+
+<script>
+function go(name){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
+  document.getElementById('s-'+name).classList.add('active');
+  const nav=document.getElementById('n-'+name);
+  if(nav)nav.classList.add('on');
+}
+</script>
+</body>
+</html>

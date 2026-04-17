@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VisionWeave — Style 01: Noir Lens</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Crimson+Pro:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{
+  background:#0D0B09;
+  display:flex;flex-direction:column;align-items:center;
+  min-height:100vh;padding:40px 20px 60px;
+  font-family:'Crimson Pro',serif;
+}
+body::after{
+  content:'';position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:9999;opacity:0.6;
+}
+.label{
+  font-family:'Playfair Display',serif;font-size:11px;
+  letter-spacing:0.35em;color:#F5A623;opacity:0.65;
+  text-transform:uppercase;margin-bottom:28px;text-align:center;
+}
+.label span{color:rgba(232,212,160,0.4);margin:0 10px;}
+
+/* PHONE */
+.phone{
+  width:390px;height:844px;
+  background:#060506;
+  border-radius:52px;
+  box-shadow:0 0 0 10px #1C1810,0 0 0 12px #0A0808,0 60px 120px rgba(0,0,0,0.85),inset 0 0 80px rgba(245,166,35,0.02);
+  overflow:hidden;position:relative;display:flex;flex-direction:column;
+}
+.notch{
+  width:120px;height:36px;background:#060506;
+  border-radius:0 0 22px 22px;
+  position:absolute;top:0;left:50%;transform:translateX(-50%);z-index:10;
+}
+.statusbar{
+  height:50px;display:flex;align-items:flex-end;justify-content:space-between;
+  padding:0 28px 8px;flex-shrink:0;
+}
+.statusbar .time{font-family:'Playfair Display',serif;font-size:15px;color:#E8D4A0;font-weight:600;}
+.statusbar .icons{display:flex;gap:5px;align-items:center;font-size:11px;color:rgba(232,212,160,0.7);}
+
+.screens{flex:1;overflow:hidden;position:relative;}
+.screen{position:absolute;inset:0;overflow-y:auto;opacity:0;pointer-events:none;transition:opacity 0.35s ease;scrollbar-width:none;}
+.screen::-webkit-scrollbar{display:none;}
+.screen.active{opacity:1;pointer-events:all;}
+
+/* ── HOME ── */
+.home{background:#060506;padding:24px 24px 100px;}
+.home-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:32px;}
+.wordmark{font-family:'Playfair Display',serif;font-size:20px;color:#F5A623;letter-spacing:0.06em;}
+.wordmark i{font-style:italic;color:#E8D4A0;}
+.avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,#3D2B0A,#F5A623);border:1.5px solid rgba(245,166,35,0.6);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;color:#0D0B09;font-size:15px;font-weight:700;}
+
+.hero-card{
+  background:linear-gradient(160deg,#1C1407 0%,#0D0B09 100%);
+  border:1px solid rgba(245,166,35,0.18);border-radius:22px;
+  padding:26px;margin-bottom:26px;position:relative;overflow:hidden;
+}
+.hero-card::before{
+  content:'';position:absolute;top:-60px;right:-40px;
+  width:220px;height:220px;
+  background:radial-gradient(circle,rgba(245,166,35,0.18) 0%,transparent 65%);
+  pointer-events:none;
+}
+.hero-card::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(to right,transparent,rgba(245,166,35,0.3),transparent);
+}
+.hero-tag{font-size:12px;letter-spacing:0.28em;color:#F5A623;text-transform:uppercase;margin-bottom:10px;}
+.hero-title{font-family:'Playfair Display',serif;font-size:30px;color:#E8D4A0;line-height:1.2;margin-bottom:10px;}
+.hero-title em{color:#F5A623;font-style:italic;}
+.hero-sub{font-size:16px;color:rgba(232,212,160,0.55);margin-bottom:22px;}
+.hero-pill{
+  display:inline-flex;align-items:center;gap:9px;
+  background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.28);
+  border-radius:100px;padding:9px 18px;cursor:pointer;
+  transition:background 0.2s;
+}
+.hero-pill:hover{background:rgba(245,166,35,0.18);}
+.pulse{width:8px;height:8px;border-radius:50%;background:#F5A623;animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.4;transform:scale(0.75);}}
+.hero-pill span{font-size:14px;color:#F5A623;letter-spacing:0.04em;}
+
+.sec-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.sec-title{font-family:'Playfair Display',serif;font-size:15px;color:#E8D4A0;letter-spacing:0.04em;}
+.sec-link{font-size:12px;color:#F5A623;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;}
+
+.scroll-row{display:flex;gap:14px;overflow-x:auto;margin:0 -24px;padding:0 24px 16px;scrollbar-width:none;}
+.scroll-row::-webkit-scrollbar{display:none;}
+
+.scard{min-width:154px;height:196px;border-radius:16px;overflow:hidden;position:relative;cursor:pointer;flex-shrink:0;}
+.scard-bg{position:absolute;inset:0;transition:transform 0.3s;}
+.scard:hover .scard-bg{transform:scale(1.06);}
+.scard-bg-1{background:linear-gradient(160deg,#3D1A0A,#8B4A14,#D4780A,#F5C040);}
+.scard-bg-2{background:linear-gradient(160deg,#0A1830,#152A50,#1E4070,#3A6898);}
+.scard-bg-3{background:linear-gradient(160deg,#1A0808,#3D1010,#6B2020,#A04040);}
+.scard-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.82) 0%,transparent 55%);}
+.scard-body{position:absolute;bottom:0;left:0;right:0;padding:14px 13px;}
+.scard-tag{font-size:10px;letter-spacing:0.22em;color:#F5A623;text-transform:uppercase;margin-bottom:4px;}
+.scard-name{font-family:'Playfair Display',serif;font-size:13px;color:#E8D4A0;line-height:1.25;}
+.scard-dist{font-size:12px;color:rgba(232,212,160,0.5);margin-top:3px;}
+
+.event-list{display:flex;flex-direction:column;gap:10px;margin-top:8px;}
+.ev{display:flex;align-items:center;gap:14px;background:rgba(245,166,35,0.04);border:1px solid rgba(245,166,35,0.1);border-radius:14px;padding:15px;}
+.ev-time{text-align:center;min-width:48px;}
+.ev-time .t{font-family:'Playfair Display',serif;font-size:19px;color:#F5A623;line-height:1;}
+.ev-time .ap{font-size:10px;color:rgba(245,166,35,0.5);letter-spacing:0.1em;}
+.ev-div{width:1px;height:34px;background:rgba(245,166,35,0.18);}
+.ev-info{flex:1;}
+.ev-name{font-family:'Playfair Display',serif;font-size:14px;color:#E8D4A0;margin-bottom:3px;}
+.ev-desc{font-size:12px;color:rgba(232,212,160,0.45);}
+.ev-badge{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;padding:4px 9px;border-radius:6px;}
+.ev-badge.today{color:#F5A623;background:rgba(245,166,35,0.14);border:1px solid rgba(245,166,35,0.25);}
+.ev-badge.pro{color:#555;background:rgba(100,100,100,0.1);border:1px solid rgba(100,100,100,0.2);}
+
+/* ── CAMERA ── */
+.cam{background:#000;position:relative;height:100%;}
+.vf{
+  position:absolute;inset:0;
+  background:linear-gradient(175deg,#0C1A28 0%,#162230 45%,#1A2818 100%);
+}
+.vf-glow{
+  position:absolute;bottom:32%;left:8%;
+  width:220px;height:220px;
+  background:radial-gradient(ellipse,rgba(245,166,35,0.28) 0%,transparent 65%);
+  transform:translateY(50%);pointer-events:none;
+}
+.grid-h{position:absolute;left:0;right:0;height:1px;background:rgba(245,166,35,0.22);}
+.grid-v{position:absolute;top:0;bottom:0;width:1px;background:rgba(245,166,35,0.22);}
+.brk{position:absolute;width:22px;height:22px;border-color:#F5A623;border-style:solid;opacity:0.85;}
+.brk-tl{top:18px;left:18px;border-width:2px 0 0 2px;}
+.brk-tr{top:18px;right:18px;border-width:2px 2px 0 0;}
+.brk-bl{bottom:120px;left:18px;border-width:0 0 2px 2px;}
+.brk-br{bottom:120px;right:18px;border-width:0 2px 2px 0;}
+
+.top-hud{position:absolute;top:60px;left:16px;right:16px;display:flex;gap:10px;align-items:flex-start;}
+.scene-pill{
+  flex:1;background:rgba(0,0,0,0.72);backdrop-filter:blur(12px);
+  border:1px solid rgba(245,166,35,0.28);border-radius:12px;padding:10px 14px;
+}
+.scene-pill .sp-tag{font-size:10px;letter-spacing:0.22em;color:#F5A623;text-transform:uppercase;margin-bottom:3px;}
+.scene-pill .sp-txt{font-size:14px;color:#E8D4A0;line-height:1.3;}
+.sun-dial{
+  width:46px;height:46px;border:1px solid rgba(245,166,35,0.45);
+  border-radius:50%;background:rgba(0,0,0,0.65);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+}
+.sun-needle{
+  width:2px;height:18px;background:linear-gradient(to top,#F5A623,transparent);
+  transform:rotate(-42deg);transform-origin:center bottom;border-radius:2px;
+}
+
+.cam-bar{
+  position:absolute;bottom:0;left:0;right:0;height:130px;
+  background:linear-gradient(to top,rgba(0,0,0,0.92) 0%,transparent 100%);
+  display:flex;align-items:center;justify-content:center;gap:36px;padding-bottom:16px;
+}
+.btn-s{
+  width:46px;height:46px;border-radius:50%;
+  background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);
+  display:flex;align-items:center;justify-content:center;color:#E8D4A0;font-size:17px;cursor:pointer;
+}
+.btn-m{
+  width:72px;height:72px;border-radius:50%;
+  border:2.5px solid #E8D4A0;background:transparent;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+}
+.btn-m-in{
+  width:58px;height:58px;border-radius:50%;background:#E8D4A0;
+  transition:transform 0.15s ease;
+}
+.btn-m:hover .btn-m-in{transform:scale(0.9);}
+
+.top-aper{
+  position:absolute;top:16px;left:50%;transform:translateX(-50%);
+  background:rgba(0,0,0,0.68);border:1px solid rgba(245,166,35,0.28);
+  border-radius:100px;padding:6px 18px;
+  display:flex;align-items:center;gap:10px;white-space:nowrap;
+}
+.aper-l{font-size:11px;letter-spacing:0.15em;color:rgba(232,212,160,0.5);text-transform:uppercase;}
+.aper-v{font-family:'Playfair Display',serif;font-size:13px;color:#F5A623;}
+
+/* ── QUIZ ── */
+.quiz{background:#060506;padding:22px 24px 100px;min-height:100%;}
+.q-back{font-size:13px;color:#F5A623;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:22px;cursor:pointer;}
+.q-step{font-size:12px;letter-spacing:0.2em;color:rgba(232,212,160,0.35);text-transform:uppercase;margin-bottom:8px;}
+.q-title{font-family:'Playfair Display',serif;font-size:26px;color:#E8D4A0;line-height:1.3;margin-bottom:16px;}
+.q-title em{color:#F5A623;font-style:italic;}
+.q-prog{display:flex;gap:4px;margin-bottom:28px;}
+.qp{height:2px;flex:1;border-radius:2px;background:rgba(245,166,35,0.15);}
+.qp.on{background:#F5A623;}
+.pg{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px;}
+.pc{border-radius:16px;overflow:hidden;aspect-ratio:3/4;position:relative;cursor:pointer;border:2px solid transparent;transition:all 0.22s ease;}
+.pc.sel{border-color:#F5A623;box-shadow:0 0 22px rgba(245,166,35,0.38);}
+.pc-bg{position:absolute;inset:0;background-size:cover;background-position:center;}
+.pc-1{background:linear-gradient(155deg,#3D1A0A,#8B4A14,#D4780A,#F5C040);}
+.pc-2{background:linear-gradient(155deg,#0A1830,#152A50,#1E4070,#3A6898);}
+.pc-3{background:linear-gradient(155deg,#0A1A0A,#152A15,#204020,#306030);}
+.pc-4{background:linear-gradient(155deg,#1A0A20,#2D1040,#451860,#602A80);}
+.pc-cap{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:12px 12px 14px;
+  background:linear-gradient(to top,rgba(0,0,0,0.8),transparent);
+  font-family:'Playfair Display',serif;font-size:12px;color:#E8D4A0;font-style:italic;
+}
+.pc-chk{
+  position:absolute;top:10px;right:10px;
+  width:24px;height:24px;border-radius:50%;
+  background:#F5A623;display:none;align-items:center;justify-content:center;
+  font-size:12px;color:#060506;font-family:'Playfair Display',serif;font-weight:700;
+}
+.pc.sel .pc-chk{display:flex;}
+.q-btn{
+  width:100%;padding:18px;border:none;border-radius:14px;
+  background:linear-gradient(135deg,#F5A623,#D4780A);
+  font-family:'Playfair Display',serif;font-size:16px;color:#060506;
+  font-weight:700;cursor:pointer;letter-spacing:0.06em;
+  transition:opacity 0.2s;
+}
+.q-btn:hover{opacity:0.88;}
+
+/* ── SPOTS ── */
+.spots{background:#060506;display:flex;flex-direction:column;height:100%;}
+.map-mock{
+  height:275px;flex-shrink:0;position:relative;overflow:hidden;
+  background:linear-gradient(170deg,#0A0F0A,#101808,#0E1406);
+}
+.map-mock::after{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse at 48% 58%,rgba(245,166,35,0.1) 0%,transparent 60%);
+}
+.mg{position:absolute;background:rgba(245,166,35,0.06);}
+.map-pin{position:absolute;display:flex;flex-direction:column;align-items:center;cursor:pointer;}
+.pin-dot{width:11px;height:11px;border-radius:50%;background:#F5A623;border:2px solid #060506;box-shadow:0 0 10px rgba(245,166,35,0.65);}
+.pin-dot.lg{width:15px;height:15px;}
+.pin-lbl{font-size:10px;color:#F5A623;background:rgba(0,0,0,0.8);border:1px solid rgba(245,166,35,0.28);border-radius:5px;padding:2px 6px;margin-top:3px;white-space:nowrap;}
+.map-hdr{position:absolute;top:16px;left:16px;right:16px;display:flex;justify-content:space-between;align-items:center;z-index:2;}
+.map-hdr-title{font-family:'Playfair Display',serif;font-size:18px;color:#E8D4A0;}
+.map-hdr-count{font-size:13px;color:#F5A623;background:rgba(245,166,35,0.1);border:1px solid rgba(245,166,35,0.28);border-radius:20px;padding:4px 12px;}
+
+.slist{flex:1;overflow-y:auto;padding:18px 24px;scrollbar-width:none;display:flex;flex-direction:column;gap:18px;}
+.slist::-webkit-scrollbar{display:none;}
+.si{display:flex;gap:14px;align-items:center;}
+.si-thumb{width:68px;height:68px;border-radius:12px;flex-shrink:0;}
+.si-t1{background:linear-gradient(135deg,#2D1B0A,#8B6914);}
+.si-t2{background:linear-gradient(135deg,#0A1828,#2A4A70);}
+.si-t3{background:linear-gradient(135deg,#1A0A1A,#451860);}
+.si-t4{background:linear-gradient(135deg,#0A1A0A,#204020);}
+.si-info .tag{font-size:11px;letter-spacing:0.14em;color:#F5A623;text-transform:uppercase;margin-bottom:4px;}
+.si-info .name{font-family:'Playfair Display',serif;font-size:16px;color:#E8D4A0;margin-bottom:4px;}
+.si-info .meta{font-size:12px;color:rgba(232,212,160,0.42);}
+
+/* ── BOTTOM NAV ── */
+.bnav{
+  height:82px;background:#0A0908;
+  border-top:1px solid rgba(245,166,35,0.1);
+  display:flex;align-items:center;justify-content:space-around;
+  padding:0 6px 18px;flex-shrink:0;
+}
+.ni{display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;padding:8px 14px;border-radius:12px;opacity:0.38;transition:opacity 0.2s;}
+.ni.on{opacity:1;}
+.ni-ico{font-size:20px;color:#E8D4A0;}
+.ni.on .ni-ico{color:#F5A623;}
+.ni-lbl{font-family:'Playfair Display',serif;font-size:9px;letter-spacing:0.16em;text-transform:uppercase;color:#E8D4A0;}
+.ni.on .ni-lbl{color:#F5A623;}
+.ni-cam{opacity:1 !important;}
+.cam-ring{
+  width:50px;height:50px;border-radius:50%;
+  border:2px solid #F5A623;background:rgba(245,166,35,0.1);
+  display:flex;align-items:center;justify-content:center;
+}
+.cam-ring svg{color:#F5A623;}
+</style>
+</head>
+<body>
+<div class="label">VisionWeave <span>·</span> Style 01 <span>·</span> Noir Lens <span>·</span> Dark Editorial</div>
+
+<div class="phone">
+  <div class="notch"></div>
+  <div class="statusbar">
+    <span class="time">6:42</span>
+    <div class="icons"><span>●●●</span><span style="margin-left:4px">WiFi</span><span style="margin-left:4px">▮▮▮</span></div>
+  </div>
+
+  <div class="screens">
+    <!-- HOME -->
+    <div class="screen home active" id="s-home">
+      <div class="home-top">
+        <div class="wordmark">Vision<i>Weave</i></div>
+        <div class="avatar">M</div>
+      </div>
+      <div class="hero-card">
+        <div class="hero-tag">Golden Hour · Today</div>
+        <div class="hero-title">Warm <em>golden</em><br>light awaits</div>
+        <div class="hero-sub">Sunset at 6:58 PM · 16 mins away</div>
+        <div class="hero-pill">
+          <div class="pulse"></div>
+          <span>Perfect for your warm portrait style</span>
+        </div>
+      </div>
+      <div class="sec-head">
+        <div class="sec-title">Nearby Spots</div>
+        <span class="sec-link" onclick="go('spots')">View all</span>
+      </div>
+      <div class="scroll-row">
+        <div class="scard"><div class="scard-bg scard-bg-1"></div><div class="scard-ov"></div><div class="scard-body"><div class="scard-tag">Landscape</div><div class="scard-name">Riverside Promenade</div><div class="scard-dist">0.4 km</div></div></div>
+        <div class="scard"><div class="scard-bg scard-bg-2"></div><div class="scard-ov"></div><div class="scard-body"><div class="scard-tag">Architecture</div><div class="scard-name">Old Bridge District</div><div class="scard-dist">1.2 km</div></div></div>
+        <div class="scard"><div class="scard-bg scard-bg-3"></div><div class="scard-ov"></div><div class="scard-body"><div class="scard-tag">Street</div><div class="scard-name">Brick Lane Alley</div><div class="scard-dist">2.1 km</div></div></div>
+      </div>
+      <div class="sec-head" style="margin-top:6px;">
+        <div class="sec-title">This Week</div>
+      </div>
+      <div class="event-list">
+        <div class="ev">
+          <div class="ev-time"><div class="t">6:58</div><div class="ap">PM</div></div>
+          <div class="ev-div"></div>
+          <div class="ev-info"><div class="ev-name">Golden Hour</div><div class="ev-desc">Warm side light · Soft shadows</div></div>
+          <div class="ev-badge today">Today</div>
+        </div>
+        <div class="ev" style="opacity:0.55;">
+          <div class="ev-time"><div class="t">7:02</div><div class="ap">AM</div></div>
+          <div class="ev-div"></div>
+          <div class="ev-info"><div class="ev-name">Fog + Blue Hour</div><div class="ev-desc">Low visibility · Moody atmosphere</div></div>
+          <div class="ev-badge pro">PRO</div>
+        </div>
+        <div class="ev" style="opacity:0.55;">
+          <div class="ev-time"><div class="t">Fri</div><div class="ap">AM</div></div>
+          <div class="ev-div"></div>
+          <div class="ev-info"><div class="ev-name">Clear Night · Milky Way</div><div class="ev-desc">Astronomy event · Zero cloud cover</div></div>
+          <div class="ev-badge pro">PRO</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CAMERA -->
+    <div class="screen cam" id="s-camera">
+      <div class="vf">
+        <div class="vf-glow"></div>
+        <div class="grid-h" style="top:33.3%;"></div>
+        <div class="grid-h" style="top:66.6%;"></div>
+        <div class="grid-v" style="left:33.3%;"></div>
+        <div class="grid-v" style="left:66.6%;"></div>
+        <div class="brk brk-tl"></div><div class="brk brk-tr"></div>
+        <div class="brk brk-bl"></div><div class="brk brk-br"></div>
+        <div class="top-aper">
+          <span class="aper-l">Scene</span>
+          <span class="aper-v">Golden Hour</span>
+          <span class="aper-l">·</span>
+          <span class="aper-v">Sun SW 42°</span>
+        </div>
+        <div class="top-hud">
+          <div class="scene-pill">
+            <div class="sp-tag">Composition</div>
+            <div class="sp-txt">Place subject at left third — matches your portrait style</div>
+          </div>
+          <div class="sun-dial"><div class="sun-needle"></div></div>
+        </div>
+        <div class="cam-bar">
+          <div class="btn-s">⊞</div>
+          <div class="btn-m"><div class="btn-m-in"></div></div>
+          <div class="btn-s">↺</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- QUIZ -->
+    <div class="screen quiz" id="s-quiz">
+      <div class="q-back">← Style Profile</div>
+      <div class="q-step">Step 3 of 3 · Photo Selection</div>
+      <div class="q-title">Which of these <em>move</em> you?</div>
+      <div class="q-prog">
+        <div class="qp on"></div><div class="qp on"></div><div class="qp on"></div>
+        <div class="qp on"></div><div class="qp on"></div><div class="qp on"></div>
+        <div class="qp on"></div><div class="qp"></div><div class="qp"></div>
+        <div class="qp"></div><div class="qp"></div><div class="qp"></div>
+      </div>
+      <div class="pg">
+        <div class="pc sel" onclick="this.classList.toggle('sel')"><div class="pc-bg pc-1"></div><div class="pc-cap">Warm golden fields</div><div class="pc-chk">✓</div></div>
+        <div class="pc" onclick="this.classList.toggle('sel')"><div class="pc-bg pc-2"></div><div class="pc-cap">Blue hour serenity</div><div class="pc-chk">✓</div></div>
+        <div class="pc" onclick="this.classList.toggle('sel')"><div class="pc-bg pc-3"></div><div class="pc-cap">Forest whispers</div><div class="pc-chk">✓</div></div>
+        <div class="pc sel" onclick="this.classList.toggle('sel')"><div class="pc-bg pc-4"></div><div class="pc-cap">Urban twilight</div><div class="pc-chk">✓</div></div>
+      </div>
+      <button class="q-btn">Next Round →</button>
+    </div>
+
+    <!-- SPOTS -->
+    <div class="screen spots" id="s-spots">
+      <div class="map-mock">
+        <div class="mg" style="top:22%;left:0;right:0;height:1px;"></div>
+        <div class="mg" style="top:50%;left:0;right:0;height:1px;"></div>
+        <div class="mg" style="top:76%;left:0;right:0;height:1px;"></div>
+        <div class="mg" style="left:22%;top:0;bottom:0;width:1px;"></div>
+        <div class="mg" style="left:52%;top:0;bottom:0;width:1px;"></div>
+        <div class="mg" style="left:78%;top:0;bottom:0;width:1px;"></div>
+        <div class="map-pin" style="top:42%;left:34%;"><div class="pin-dot lg"></div><div class="pin-lbl">Riverside</div></div>
+        <div class="map-pin" style="top:58%;left:60%;"><div class="pin-dot"></div><div class="pin-lbl">Old Bridge</div></div>
+        <div class="map-pin" style="top:30%;left:68%;"><div class="pin-dot"></div><div class="pin-lbl">Brick Lane</div></div>
+        <div class="map-pin" style="top:68%;left:20%;"><div class="pin-dot"></div></div>
+        <div class="map-hdr">
+          <div class="map-hdr-title">Photo Spots</div>
+          <div class="map-hdr-count">12 near you</div>
+        </div>
+      </div>
+      <div class="slist">
+        <div class="si"><div class="si-thumb si-t1"></div><div class="si-info"><div class="tag">Landscape · Golden Hour</div><div class="name">Riverside Promenade</div><div class="meta">0.4 km · ★★★★☆ · Best at sunset</div></div></div>
+        <div class="si"><div class="si-thumb si-t2"></div><div class="si-info"><div class="tag">Architecture · Blue Hour</div><div class="name">Old Bridge District</div><div class="meta">1.2 km · Google Places · Best at dusk</div></div></div>
+        <div class="si"><div class="si-thumb si-t3"></div><div class="si-info"><div class="tag">Street · Moody</div><div class="name">Brick Lane Alley</div><div class="meta">2.1 km · ★★★★★ · Any time</div></div></div>
+        <div class="si"><div class="si-thumb si-t4"></div><div class="si-info"><div class="tag">Landscape · Sunrise</div><div class="name">Victoria Park East</div><div class="meta">2.8 km · Google Places · Best at sunrise</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div class="bnav">
+    <div class="ni on" id="n-home" onclick="go('home')"><div class="ni-ico">⌂</div><div class="ni-lbl">Home</div></div>
+    <div class="ni" id="n-spots" onclick="go('spots')"><div class="ni-ico">◎</div><div class="ni-lbl">Spots</div></div>
+    <div class="ni ni-cam" id="n-camera" onclick="go('camera')">
+      <div class="cam-ring">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="3.5"/><path d="M9 2h6l2 3H7z"/><rect x="2" y="5" width="20" height="16" rx="2"/></svg>
+      </div>
+    </div>
+    <div class="ni" id="n-quiz" onclick="go('quiz')"><div class="ni-ico">◈</div><div class="ni-lbl">Style</div></div>
+    <div class="ni" id="n-profile"><div class="ni-ico">◉</div><div class="ni-lbl">Profile</div></div>
+  </div>
+</div>
+
+<script>
+function go(name){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('on'));
+  document.getElementById('s-'+name).classList.add('active');
+  const nav=document.getElementById('n-'+name);
+  if(nav)nav.classList.add('on');
+}
+</script>
+</body>
+</html>

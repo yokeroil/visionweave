@@ -1,0 +1,51 @@
+{
+  "expo": {
+    "name": "VisionWeave",
+    "slug": "visionweave",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "dark",
+    "scheme": "visionweave",
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#08070A"
+    },
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.visionweave.app",
+      "infoPlist": {
+        "NSCameraUsageDescription": "VisionWeave uses your camera to provide real-time composition guidance.",
+        "NSLocationWhenInUseUsageDescription": "VisionWeave uses your location to find nearby photo spots and calculate sun position.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "VisionWeave uses your location for proactive shoot opportunity notifications."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#08070A"
+      },
+      "permissions": ["CAMERA", "ACCESS_FINE_LOCATION", "ACCESS_BACKGROUND_LOCATION"]
+    },
+    "plugins": [
+      "expo-router",
+      "expo-camera",
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "VisionWeave uses your location for photo spots and sun timing."
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/icon.png",
+          "color": "#F0A832"
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
